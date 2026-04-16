@@ -1,0 +1,10 @@
+<h1>Private Dashboard</h1>
+<button id="logout">Logout</button>
+<script>
+  import { createAuthClient } from "better-auth/client";
+  const authClient = createAuthClient();
+  document.getElementById("logout")?.addEventListener("click", async () => {
+    await authClient.signOut();
+    window.location.href = "/";
+  });
+</script>

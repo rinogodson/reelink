@@ -1,0 +1,8 @@
+<h1>Welcome! Click below to finish setup.</h1>
+<button id="finish">Complete Onboarding</button>
+<script>
+  document.getElementById("finish")?.addEventListener("click", async () => {
+    await fetch("/api/complete-onboarding", { method: "POST" });
+    window.location.href = "/dashboard";
+  });
+</script>
