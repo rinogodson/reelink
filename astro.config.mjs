@@ -1,6 +1,8 @@
 import { defineConfig } from "astro/config";
 import node from "@astrojs/node";
 
+import tailwindcss from "@tailwindcss/vite";
+
 export default defineConfig({
   output: "server",
   adapter: node({
@@ -10,8 +12,11 @@ export default defineConfig({
     optimizeDeps: {
       exclude: ["better-auth"],
     },
+
     ssr: {
       external: ["node:async_hooks", "node:events", "node:util"],
     },
+
+    plugins: [tailwindcss()],
   },
 });
