@@ -24,6 +24,9 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       onboardingCompleted: { type: "boolean" },
+      linkTail: { type: "string" },
+      igAcc: { type: "string" },
+      textName: { type: "string" },
     },
   },
 });

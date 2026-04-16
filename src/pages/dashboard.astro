@@ -1,10 +1,72 @@
-<h1>Private Dashboard</h1>
-<button id="logout">Logout</button>
-<script>
-  import { createAuthClient } from "better-auth/client";
-  const authClient = createAuthClient();
-  document.getElementById("logout")?.addEventListener("click", async () => {
-    await authClient.signOut();
-    window.location.href = "/";
-  });
-</script>
+---
+import { db, auth } from "../lib/auth";
+import { links } from "../db/schema";
+import { eq, desc } from "drizzle-orm";
+
+const session = await auth.api.getSession({ headers: Astro.request.headers });
+if (!session) {
+    return Astro.redirect("/");
+}
+
+const userLinks = await db
+    .select()
+    .from(links)
+    .where(eq(links.userId, session.user.id))
+    .orderBy(desc(links.createdAt));
+---
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Reelink</title>
+</head>
+<body>
+    <div style="max-width: 800px; margin: 50px auto; font-family: sans-serif;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>Your Links</h1>
+            <div>
+                <a href="/links/create" style="padding: 10px 20px; background: #28a745; color: white; text-decoration: none; border-radius: 5px;">+ Create Link</a>
+                <button id="logout" style="margin-left: 10px; padding: 10px; background: #dc3545; color: white; border: none; cursor: pointer; border-radius: 5px;">Logout</button>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px;">
+            {userLinks.length === 0 ? (
+                <p>You haven't created any links yet.</p>
+            ) : (
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #ddd;">
+                            <th style="text-align: left; padding: 10px;">Name</th>
+                            <th style="text-align: left; padding: 10px;">Reel URL</th>
+                            <th style="text-align: left; padding: 10px;">Destination</th>
+                            <th style="text-align: left; padding: 10px;">Created</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {userLinks.map(link => (
+                            <tr style="border-bottom: 1px solid #eee;">
+                                <td style="padding: 10px;">
+                                    <a href={`/links/${link.id}`} style="color: #007bff; text-decoration: none; font-weight: bold;">{link.name}</a>
+                                </td>
+                                <td style="padding: 10px;"><a href={link.reelURL} target="_blank" style="color: #007bff; max-width: 150px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{link.reelURL}</a></td>
+                                <td style="padding: 10px;"><a href={link.destURL} target="_blank" style="color: #007bff; max-width: 150px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{link.destURL}</a></td>
+                                <td style="padding: 10px;">{new Date(link.createdAt).toLocaleDateString()}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
+        </div>
+    </div>
+
+    <script>
+        import { createAuthClient } from "better-auth/client";
+        const authClient = createAuthClient();
+        document.getElementById("logout")?.addEventListener("click", async () => {
+            await authClient.signOut();
+            window.location.href = "/";
+        });
+    </script>
+</body>
+</html>

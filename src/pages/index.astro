@@ -5,8 +5,13 @@ import "../styles/global.css";
 <div
   class="h-screen w-full bg-linear-to-b from-[#0E131B] to-[#0B0B0B] flex flex-col items-center justify-center"
 >
-  <div class="h-screen w-screen">fj</div>
-  <button id="login" class="text-2xl text-white">Login with Google</button>
+  <div class="h-screen w-screen flex justify-center items-center">
+    <button
+      id="login"
+      class="text-2xl text-black bg-amber-50 px-5 py-3 rounded-2xl hover:bg-amber-100 transition-colors duration-100 active:bg-amber-200"
+      >Login with Google</button
+    >
+  </div>
 </div>
 <script>
   import { createAuthClient } from "better-auth/client";

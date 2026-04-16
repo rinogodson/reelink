@@ -1,0 +1,104 @@
+---
+import { db } from "../lib/auth";
+import { user } from "../db/schema";
+import { eq } from "drizzle-orm";
+
+const { linkTail } = Astro.params;
+
+if (!linkTail) {
+  return Astro.redirect("/");
+}
+
+const profile = await db.query.user.findFirst({
+    where: eq(user.linkTail, linkTail),
+    with: {
+        links: true
+    }
+});
+
+if (!profile) {
+    return new Response("Not Found", { status: 404 });
+}
+
+const userLinks = profile.links || [];
+---
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{profile.textName} | Reelink</title>
+</head>
+<body style="background-color: #f9fafb; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px 20px;">
+
+    <div style="text-align: center; margin-bottom: 2rem;">
+        {profile.image && (
+            <img src={profile.image} alt={profile.textName} style="width: 96px; height: 96px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem; border: 4px solid white; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);" />
+        )}
+        <h1 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin: 0;">{profile.textName}</h1>
+    </div>
+
+    <div style="width: 100%; max-width: 400px; position: relative;">
+        <input 
+            id="paste-bar"
+            type="text" 
+            inputmode="none"
+            style="width: 100%; padding: 12px 16px; border-radius: 9999px; border: 2px solid #d1d5db; background-color: white; font-size: 1rem; outline: none; box-sizing: border-box; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); caret-color: transparent; cursor: default; transition: all 0.3s ease;"
+            placeholder="Paste Reel link here"
+        />
+        <style>
+            #paste-bar:focus {
+                border-color: #3b82f6;
+                box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+            }
+            #paste-bar.success {
+                background-color: #dcfce7 !important;
+                border-color: #22c55e !important;
+            }
+            #paste-bar.error {
+                background-color: #fee2e2 !important;
+                border-color: #ef4444 !important;
+            }
+        </style>
+    </div>
+
+    <script define:vars={{ userLinks }}>
+        const pasteBar = document.getElementById('paste-bar');
+
+        if (pasteBar) {
+            // Prevent all keydown events to stop typing
+            pasteBar.addEventListener('keydown', (e) => {
+                const isPasteShortcut = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'v';
+                if (!isPasteShortcut) {
+                    e.preventDefault();
+                }
+            });
+
+            pasteBar.addEventListener('paste', (e) => {
+                // Wait for the input to be updated with the pasted content
+                setTimeout(() => {
+                    const pastedValue = pasteBar.value.trim();
+                    if (!pastedValue) return;
+
+                    const match = userLinks.find(link => 
+                        link.reelURL.trim() === pastedValue || 
+                        link.reelURL.trim().split('?')[0] === pastedValue.split('?')[0]
+                    );
+
+                    if (match) {
+                        pasteBar.classList.add('success');
+                        setTimeout(() => {
+                            window.location.href = match.destURL;
+                        }, 600);
+                    } else {
+                        pasteBar.classList.add('error');
+                        setTimeout(() => {
+                            pasteBar.value = "";
+                            pasteBar.classList.remove('error');
+                        }, 600);
+                    }
+                }, 0);
+            });
+        }
+    </script>
+</body>
+</html>

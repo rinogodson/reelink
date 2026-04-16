@@ -1,0 +1,63 @@
+---
+---
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Link | Reelink</title>
+</head>
+<body>
+    <div style="max-width: 500px; margin: 50px auto; font-family: sans-serif;">
+        <a href="/dashboard" style="text-decoration: none; color: #007bff;">← Back to Dashboard</a>
+        <h1>Create a New Link</h1>
+        
+        <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 20px;">
+            <div>
+                <label for="name">Link Name (for your reference):</label><br>
+                <input type="text" id="name" placeholder="Summer Collection Product" style="width: 100%; padding: 8px; margin-top: 5px;">
+            </div>
+            <div>
+                <label for="reelURL">Instagram Reel URL:</label><br>
+                <input type="url" id="reelURL" placeholder="https://www.instagram.com/reels/..." style="width: 100%; padding: 8px; margin-top: 5px;">
+            </div>
+            <div>
+                <label for="destURL">Destination URL (where the user goes):</label><br>
+                <input type="url" id="destURL" placeholder="https://example.com/product" style="width: 100%; padding: 8px; margin-top: 5px;">
+            </div>
+            
+            <button id="createBtn" style="padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; margin-top: 10px;">
+                Create Link
+            </button>
+        </div>
+    </div>
+
+    <script>
+    document.getElementById("createBtn")?.addEventListener("click", async () => {
+        const name = (document.getElementById("name") as HTMLInputElement).value;
+        const reelURL = (document.getElementById("reelURL") as HTMLInputElement).value;
+        const destURL = (document.getElementById("destURL") as HTMLInputElement).value;
+
+        if (!name || !reelURL || !destURL) {
+            alert("Please fill in all fields.");
+            return;
+        }
+
+        const response = await fetch("/api/links/create", { 
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name, reelURL, destURL })
+        });
+
+        if (response.ok) {
+            alert("Link created successfully!");
+            window.location.href = "/dashboard";
+        } else {
+            const error = await response.text();
+            alert("Failed to create link: " + error);
+        }
+    });
+    </script>
+</body>
+</html>

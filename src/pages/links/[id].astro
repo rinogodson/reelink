@@ -1,0 +1,103 @@
+---
+import { db, auth } from "../../lib/auth";
+import { links } from "../../db/schema";
+import { eq, and } from "drizzle-orm";
+
+const { id } = Astro.params;
+
+if (!id) {
+  return Astro.redirect("/dashboard");
+}
+
+const session = await auth.api.getSession({ headers: Astro.request.headers });
+if (!session) {
+  return Astro.redirect("/");
+}
+
+const link = await db
+  .select()
+  .from(links)
+  .where(and(eq(links.id, id), eq(links.userId, session.user.id)))
+  .then((res) => res[0]);
+
+if (!link) {
+  return Astro.redirect("/dashboard");
+}
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{link.name} | Reelink</title>
+  </head>
+  <body>
+    <div style="max-width: 600px; margin: 50px auto; font-family: sans-serif;">
+      <a href="/dashboard" style="text-decoration: none; color: #007bff;"
+        >← Back to Dashboard</a
+      >
+
+      <div
+        style="margin-top: 20px; padding: 20px; border: 1px solid #ddd; border-radius: 8px;"
+      >
+        <h1>{link.name}</h1>
+        <p><strong>Link ID:</strong> {link.id}</p>
+        <p>
+          <strong>Instagram Reel:</strong>
+          <br />
+          <a
+            href={link.reelURL}
+            target="_blank"
+            style="color: #007bff; word-break: break-all;">{link.reelURL}</a
+          >
+        </p>
+        <p>
+          <strong>Destination URL:</strong>
+          <br />
+          <a
+            href={link.destURL}
+            target="_blank"
+            style="color: #007bff; word-break: break-all;">{link.destURL}</a
+          >
+        </p>
+        <p>
+          <strong>Created:</strong>
+          {new Date(link.createdAt).toLocaleString()}
+        </p>
+
+        <div style="margin-top: 30px; border-top: 1px solid #eee; pt-20px">
+          <button
+            id="deleteBtn"
+            data-id={link.id}
+            style="margin-top: 20px; padding: 10px 20px; background: #dc3545; color: white; border: none; cursor: pointer; border-radius: 5px;"
+          >
+            Delete Link
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("deleteBtn")
+        ?.addEventListener("click", async (e) => {
+          const id = (e.target as HTMLButtonElement).dataset.id;
+          if (!confirm("Are you sure you want to delete this link?")) return;
+
+          const response = await fetch("/api/links/delete", {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id }),
+          });
+
+          if (response.ok) {
+            window.location.href = "/dashboard";
+          } else {
+            alert("Failed to delete link.");
+          }
+        });
+    </script>
+  </body>
+</html>

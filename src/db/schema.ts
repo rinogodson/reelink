@@ -1,4 +1,5 @@
 import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -9,7 +10,32 @@ export const user = pgTable("user", {
   createdAt: timestamp("createdAt").notNull(),
   updatedAt: timestamp("updatedAt").notNull(),
   onboardingCompleted: boolean("onboardingCompleted").default(false).notNull(),
+  linkTail: text("linkTail"),
+  igAcc: text("igAcc"),
+  textName: text("textName"),
 });
+
+export const userRelations = relations(user, ({ many }) => ({
+  links: many(links),
+}));
+
+export const links = pgTable("links", {
+  id: text("id").primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => user.id),
+  name: text("name").notNull(),
+  reelURL: text("reelURL").notNull(),
+  destURL: text("destURL").notNull(),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+});
+
+export const linksRelations = relations(links, ({ one }) => ({
+  user: one(user, {
+    fields: [links.userId],
+    references: [user.id],
+  }),
+}));
 
 export const session = pgTable("session", {
   id: text("id").primaryKey(),
