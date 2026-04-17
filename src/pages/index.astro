@@ -2,7 +2,7 @@
 import "../styles/global.css";
 import Button from "../components/Button.astro";
 import googleIcon from "../assets/icons/google.svg";
-import reelink from "../assets/REELINK.svg";
+import reelink from "../assets/reelink.svg";
 import iphone from "../assets/iphone.webp";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
@@ -138,15 +138,15 @@ const audienceSteps = [
   import { authClient } from "../lib/auth-client";
 
   // Handle page load
-  window.addEventListener('load', () => {
-    document.body.classList.add('loaded');
+  window.addEventListener("load", () => {
+    document.body.classList.add("loaded");
     // @ts-ignore
     window.hideLoading?.();
   });
 
   // Just in case load event already fired
-  if (document.readyState === 'complete') {
-    document.body.classList.add('loaded');
+  if (document.readyState === "complete") {
+    document.body.classList.add("loaded");
     // @ts-ignore
     window.hideLoading?.();
   }
@@ -155,9 +155,9 @@ const audienceSteps = [
     // @ts-ignore
     window.showLoading?.();
     try {
-      const { error } = await authClient.signIn.social({ 
+      const { error } = await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/dashboard" 
+        callbackURL: "/dashboard",
       });
       if (error) {
         // Only show general alert if it's NOT a session expiry error (which is handled by the client)
