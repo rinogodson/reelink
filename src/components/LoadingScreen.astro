@@ -71,4 +71,19 @@
       }, 300);
     }
   };
+
+  // Intercept internal links to show loader between pages
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (
+      link && 
+      link.href && 
+      link.href.startsWith(window.location.origin) && 
+      !link.getAttribute('target') && 
+      !link.href.includes('#') &&
+      link.href !== window.location.href
+    ) {
+      window.showLoading();
+    }
+  });
 </script>

@@ -3,9 +3,10 @@ interface Props {
   label: string;
   classLI?: string;
   id?: string;
+  value?: string;
 }
 
-const { label, classLI, id } = Astro.props;
+const { label, classLI, id, value } = Astro.props;
 ---
 
 <div class="flex flex-col gap-1.5 w-full">
@@ -14,6 +15,7 @@ const { label, classLI, id } = Astro.props;
       id={id}
       type="text"
       placeholder={label}
+      value={value}
       class:list={[
         classLI,
         "h-10 px-5 py-8 text-3xl bg-[linear-gradient(180deg,rgba(217,217,217,0.15)_0%,rgba(115,115,115,0.15)_100%)] border border-[rgba(255,255,255,0.1)] focus:border-[rgba(255,255,255,0.3)] shadow-[0px_2px_2px_rgba(0,0,0,0.25),inset_0px_2px_2px_rgba(255,255,255,0.25)] rounded-[22px] outline-none",

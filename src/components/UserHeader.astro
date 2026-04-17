@@ -1,0 +1,95 @@
+---
+interface Props {
+  name: string;
+  image?: string | null;
+  linkTail?: string | null;
+}
+
+import copyIcon from "../assets/copy.svg";
+
+const { name, image, linkTail } = Astro.props;
+const bioLink = linkTail ? `reelink.cc/${linkTail}` : "";
+---
+
+<div class="flex items-center justify-between py-6 mb-8">
+  <div class="flex items-center gap-4 w-full">
+    <div class="h-12 w-12 shrink-0 relative">
+      {
+        image ? (
+          <>
+            <img
+              src={image}
+              alt={name}
+              onerror="this.style.display='none'"
+              class="h-full w-full rounded-full border border-white/20 object-cover absolute inset-0 z-10"
+            />
+            <div class="h-full w-full rounded-full bg-zinc-800 flex items-center justify-center border border-white/20">
+              <span class="text-xl font-bold">
+                {name.charAt(0).toUpperCase()}
+              </span>
+            </div>
+          </>
+        ) : (
+          <div class="h-full w-full rounded-full bg-zinc-800 flex items-center justify-center border border-white/20">
+            <span class="text-xl font-bold">{name.charAt(0)}</span>
+          </div>
+        )
+      }
+    </div>
+    <div class="flex flex-col gap-2 w-full">
+      <h2 class="text-2xl font-bold text-[#E9E9E9]">{name}</h2>
+      <div class="flex items-center justify-between w-full gap-4">
+        <div class="flex items-center gap-2">
+          <button
+            id="copy-bio-link"
+            data-link={bioLink}
+            class="bg-[#D9D9D9]/22 hover:bg-white/10 rounded-full w-[8em] px-3 py-1 flex justify-center items-center font-[Rubik] transition-colors"
+          >
+            <img
+              src={copyIcon.src}
+              alt="Copy"
+              class="w-4 h-4 inline-block mr-1"
+            />
+            <span id="biolinktext">BIO LINK</span>
+          </button>
+          <a href="/settings" title="Settings">
+            <button
+              class="bg-[#D9D9D9]/22 hover:bg-white/10 rounded-full w-fit px-3 py-1 flex justify-center items-center font-[Rubik] transition-colors"
+            >
+              <span>EDIT</span>
+            </button>
+          </a>
+        </div>
+        <button
+          id="logout"
+          class="px-2 py-1 bg-red-600/60 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+        >
+          Logout
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const copyBtn = document.getElementById("copy-bio-link");
+  const bioLinkText = document.getElementById("biolinktext");
+
+  copyBtn?.addEventListener("click", async () => {
+    const link = copyBtn.getAttribute("data-link");
+    if (link) {
+      try {
+        await navigator.clipboard.writeText(link);
+        if (bioLinkText) {
+          const originalText = bioLinkText.textContent;
+          bioLinkText.textContent = "COPIED";
+          setTimeout(() => {
+            bioLinkText.textContent = originalText;
+          }, 2000);
+        }
+      } catch (err) {
+        alert("Failed to copy.");
+      }
+    }
+  });
+</script>

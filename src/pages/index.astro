@@ -135,8 +135,7 @@ const audienceSteps = [
   </section>
 </BaseLayout>
 <script>
-  import { createAuthClient } from "better-auth/client";
-  const authClient = createAuthClient();
+  import { authClient } from "../lib/auth-client";
 
   // Handle page load
   window.addEventListener('load', () => {
@@ -155,6 +154,25 @@ const audienceSteps = [
   document.getElementById("login")?.addEventListener("click", async () => {
     // @ts-ignore
     window.showLoading?.();
-    await authClient.signIn.social({ provider: "google" });
+    try {
+      const { error } = await authClient.signIn.social({ 
+        provider: "google",
+        callbackURL: "/dashboard" 
+      });
+      if (error) {
+        // Only show general alert if it's NOT a session expiry error (which is handled by the client)
+        if (!error.message?.includes("Failed to get session")) {
+          console.error("Sign in failed:", error);
+          // @ts-ignore
+          window.hideLoading?.();
+          alert("Failed to sign in. Please try again.");
+        }
+      }
+    } catch (err) {
+      console.error("Sign in error:", err);
+      // @ts-ignore
+      window.hideLoading?.();
+      alert("An unexpected error occurred.");
+    }
   });
 </script>

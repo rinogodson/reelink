@@ -1,0 +1,172 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { auth } from "../lib/auth";
+import Input from "../components/Input.astro";
+import Button from "../components/Button.astro";
+import BackButton from "../components/BackButton.astro";
+
+const session = await auth.api.getSession({ headers: Astro.request.headers });
+if (!session) {
+  return Astro.redirect("/");
+}
+
+const user = session.user;
+---
+
+<BaseLayout title="Settings | Reelink">
+  <div
+    class="text-[#E9E9E9] min-h-screen font-[Inter] items-center flex flex-col gap-4 pb-20 px-4"
+  >
+    <div
+      class="h-[30%] w-full max-w-sm justify-center flex flex-col gap-4 mt-10"
+    >
+      <BackButton href="/dashboard" label="Dashboard" />
+      <h1 class="text-4xl font-medium">Account Settings</h1>
+    </div>
+
+    <div class="flex flex-col gap-6 mt-10 w-full md:w-[50%] items-center">
+      <!-- IG Account -->
+      <div class="w-full text-center max-w-sm gap-7 flex flex-col items-center">
+        <div class="w-full text-center max-w-sm flex flex-col">
+          <label
+            for="textName"
+            class="font-[Rubik] text-xl opacity-50 mb-1 uppercase tracking-wider transition-all duration-200"
+          >
+            Instagram Account Link
+          </label>
+          <Input label="IG Acc Link" id="igAcc" value={user.igAcc || ""} />
+        </div>
+
+        <!-- Display Name -->
+        <div
+          class="flex text-center flex-col gap-3 relative w-full max-w-sm has-value"
+        >
+          <label
+            for="textName"
+            id="label-textName"
+            class="font-[Jaro] text-4xl uppercase tracking-wider transition-all duration-200"
+          >
+            {user.textName || "Display Name"}
+          </label>
+          <Input
+            label="Display Name"
+            id="textName"
+            value={user.textName || ""}
+          />
+        </div>
+
+        <!-- Link Tail -->
+        <div
+          class="flex text-center flex-col relative w-full max-w-sm has-value"
+        >
+          <label
+            for="linkTail"
+            id="label-linkTail"
+            class="text-2xl font-semibold transition-all duration-200"
+          >
+            <span>reelink.cc/</span><span
+              id="preview-tail"
+              class="text-blue-400">{user.linkTail || "link-tail"}</span
+            >
+          </label>
+          <div class="mt-2">
+            <Input
+              label="Link Tail"
+              id="linkTail"
+              value={user.linkTail || ""}
+            />
+          </div>
+        </div>
+
+        <Button
+          id="save-settings"
+          label="Save Changes"
+          classLI="mt-10 px-8 font-bold from-[#009CFF] to-[#0061F5] border-[#004DC4] rounded-full bg-linear-to-b text-white "
+        />
+      </div>
+    </div>
+
+    <script>
+      import { authClient } from "../lib/auth-client";
+
+      // Handle page load
+      window.addEventListener("load", () => {
+        document.body.classList.add("loaded");
+        // @ts-ignore
+        window.hideLoading?.();
+      });
+
+      if (document.readyState === "complete") {
+        document.body.classList.add("loaded");
+        // @ts-ignore
+        window.hideLoading?.();
+      }
+
+      // Interactive Preview Logic
+      const nameInput = document.getElementById("textName") as HTMLInputElement;
+      const nameLabel = document.getElementById("label-textName");
+      const nameWrapper = nameLabel?.parentElement;
+
+      nameInput?.addEventListener("input", () => {
+        const val = nameInput.value;
+        if (nameLabel)
+          nameLabel.textContent = val.length > 0 ? val : "Display Name";
+        if (val.length > 0) nameWrapper?.classList.add("has-value");
+        else nameWrapper?.classList.remove("has-value");
+      });
+
+      const tailInput = document.getElementById("linkTail") as HTMLInputElement;
+      const tailPreview = document.getElementById("preview-tail");
+      const tailWrapper =
+        document.getElementById("label-linkTail")?.parentElement;
+
+      tailInput?.addEventListener("input", () => {
+        const val = tailInput.value;
+        if (tailPreview)
+          tailPreview.textContent = val.length > 0 ? val : "link-tail";
+        if (val.length > 0) tailWrapper?.classList.add("has-value");
+        else tailWrapper?.classList.remove("has-value");
+      });
+
+      // Save Logic
+      const saveBtn = document.getElementById("save-settings");
+
+      saveBtn?.addEventListener("click", async () => {
+        const textName = nameInput.value;
+        const igAcc = (document.getElementById("igAcc") as HTMLInputElement)
+          .value;
+        const linkTail = tailInput.value;
+
+        if (!textName || !igAcc || !linkTail) {
+          alert("Please fill in all fields.");
+          return;
+        }
+
+        // @ts-ignore
+        window.showLoading?.();
+
+        try {
+          const response = await fetch("/api/user/update", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ textName, igAcc, linkTail }),
+          });
+
+          if (response.ok) {
+            window.location.href = "/dashboard";
+          } else {
+            const err = await response.text();
+            alert("Failed to update settings: " + err);
+            // @ts-ignore
+            window.hideLoading?.();
+          }
+        } catch (err) {
+          console.error("Update error:", err);
+          // @ts-ignore
+          window.hideLoading?.();
+          alert("An unexpected error occurred.");
+        }
+      });
+    </script>
+  </div>
+</BaseLayout>
