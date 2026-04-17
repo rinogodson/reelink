@@ -6,7 +6,7 @@ This is a full-stack web application utilizing Server-Side Rendering (SSR). It i
 
 ## 🛠️ Tech Stack
 
-- **Framework:** Astro (SSR mode via `@astrojs/node` standalone)
+- **Framework:** Astro (SSR mode via `@astrojs/vercel`)
 - **Runtime & Package Manager:** Bun
 - **Database:** Neon (Serverless PostgreSQL)
 - **ORM:** Drizzle ORM
@@ -16,7 +16,7 @@ This is a full-stack web application utilizing Server-Side Rendering (SSR). It i
 
 ## 📂 Key File Structure
 
-- `astro.config.mjs`: Astro & Vite configuration (handles Node SSR polyfills for Bun).
+- `astro.config.mjs`: Astro & Vite configuration (handles Vercel adapter and SSR settings).
 - `src/db/schema.ts`: Drizzle ORM schema definitions.
 - `src/lib/auth.ts`: Better Auth configuration and Drizzle DB client initialization.
 - `src/middleware.ts`: Astro middleware handling route protection and onboarding redirection.

@@ -1,17 +1,15 @@
 import { defineConfig } from "astro/config";
-import cloudflare from "@astrojs/cloudflare";
-
 import tailwindcss from "@tailwindcss/vite";
+import vercel from "@astrojs/vercel";
 
 export default defineConfig({
   output: "server",
-  adapter: cloudflare({
-    mode: "directory",
-  }),
+  adapter: vercel(),
   vite: {
     optimizeDeps: {
       exclude: ["better-auth"],
     },
+    trailingSlash: "never",
 
     ssr: {
       external: ["node:async_hooks", "node:events", "node:util"],

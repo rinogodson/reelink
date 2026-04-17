@@ -8,7 +8,6 @@ const sql = neon(import.meta.env.DATABASE_URL);
 export const db = drizzle(sql, { schema });
 
 export const auth = betterAuth({
-  // ADD THIS LINE
   baseURL: import.meta.env.BETTER_AUTH_URL,
 
   database: drizzleAdapter(db, {

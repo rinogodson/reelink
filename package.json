@@ -9,12 +9,11 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro",
-    "generate-types": "wrangler types"
+    "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^13.1.10",
     "@astrojs/node": "^10.0.5",
+    "@astrojs/vercel": "^8.0.0",
     "@neondatabase/serverless": "^1.0.2",
     "@tailwindcss/vite": "^4.2.2",
     "@upstash/ratelimit": "^2.0.8",
@@ -25,8 +24,7 @@
     "drizzle-orm": "^0.45.2",
     "prettier": "^3.8.3",
     "prettier-plugin-astro": "^0.14.1",
-    "tailwindcss": "^4.2.2",
-    "wrangler": "^4.83.0"
+    "tailwindcss": "^4.2.2"
   },
   "overrides": {
     "vite": "^7"
