@@ -5,7 +5,9 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   output: "server",
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    mode: "directory",
+  }),
   vite: {
     optimizeDeps: {
       exclude: ["better-auth"],
