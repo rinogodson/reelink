@@ -1,22 +1,160 @@
 ---
 import "../styles/global.css";
+import Button from "../components/Button.astro";
+import googleIcon from "../assets/icons/google.svg";
+import reelink from "../assets/REELINK.svg";
+import iphone from "../assets/iphone.webp";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const creatorSteps = [
+  "Go to your Dashboard",
+  "Create a Reelink",
+  "Paste Reel's Link",
+  "Paste Destination Link",
+];
+
+const audienceSteps = [
+  "Copy Reel's Link",
+  "Open Reelink in Bio",
+  "Paste copied link",
+  "Go to Destination Link",
+];
 ---
 
-<div
-  class="h-screen w-full bg-linear-to-b from-[#0E131B] to-[#0B0B0B] flex flex-col items-center justify-center"
->
-  <div class="h-screen w-screen flex justify-center items-center">
-    <button
-      id="login"
-      class="text-2xl text-black bg-amber-50 px-5 py-3 rounded-2xl hover:bg-amber-100 transition-colors duration-100 active:bg-amber-200"
-      >Login with Google</button
-    >
+<BaseLayout title="Reelink - Let Comments Be Comments">
+  <div class="font-[Funnel_Display] md:h-screen h-fit w-full flex flex-col">
+    <div class="md:h-screen h-fit w-screen flex flex-col md:flex-row">
+      <div
+        class="flex flex-col md:pl-40 pl-10 md:pr-0 pr-10 w-full md:w-[50%] justify-center gap-4 h-full"
+      >
+        <div
+          class="w-full flex justify-center md:justify-start md:mb-15 md:mt-0 mb-5 mt-10"
+        >
+          <img src={reelink.src} alt="logo" class="md:w-60 w-45" />
+        </div>
+        <p
+          class="md:text-5xl text-4xl md:leading-15 leading-11 font-medium text-white"
+        >
+          Let Comments <br />Be Comments
+        </p>
+        <p class="md:text-3xl text-2xl text-[#CFCFCF] max-w-[25ch]">
+          Never ask the people who <span class="text-[#FFCCCC]">love</span> you to
+          comment and <span class="text-[#EACCFF]">wait</span> for a DM.
+
+          <br /><br /><span class="text-white">Ask them to copy-paste</span>
+        </p>
+        <a href="#login">
+          <Button
+            label="Get Started"
+            classLI="mt-10 px-8 font-bold from-[#009CFF] to-[#0061F5] border-[#004DC4] rounded-full bg-linear-to-b text-white "
+          />
+        </a>
+      </div>
+      <div
+        class="flex flex-col md:h-full h-fit items-center w-full md:w-[50%] justify-center"
+      >
+        <img
+          src={iphone.src}
+          alt="iphone"
+          class="md:w-100 w-80 md:mt-0 mt-15"
+        />
+      </div>
+    </div>
   </div>
-</div>
+  <section class="text-white py-20 px-6 font-sans">
+    <div class="max-w-4xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24">
+        <div>
+          <h2
+            class="text-2xl font-bold mb-8 text-zinc-400 uppercase tracking-widest"
+          >
+            To you:
+          </h2>
+          <ol class="space-y-6">
+            {
+              creatorSteps.map((step, index) => (
+                <li class="flex items-start gap-4">
+                  <span class="text-xl font-bold text-white leading-none">
+                    {index + 1}.
+                  </span>
+                  <p class="text-xl font-medium tracking-tight">{step}</p>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+
+        <div>
+          <h2
+            class="text-2xl font-bold mb-8 text-zinc-400 uppercase tracking-widest"
+          >
+            To your audience:
+          </h2>
+          <ol class="space-y-6">
+            {
+              audienceSteps.map((step, index) => (
+                <li class="flex items-start gap-4">
+                  <span class="text-xl font-bold text-white leading-none">
+                    {index + 1}.
+                  </span>
+                  <p class="text-xl font-medium tracking-tight">{step}</p>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </div>
+
+      <div class="mt-32 text-center space-y-12">
+        <div class="space-y-4">
+          <p class="text-zinc-500 font-medium uppercase tracking-tighter">
+            To start creating
+          </p>
+          <Button
+            classLI="bg-linear-to-b from-[#CBCBCB] to-[#FFFFFF] text-shadow-none border-[#A5A5A5] border-3"
+            label="Sign In with Google"
+            id="login"
+            icon={googleIcon}
+          />
+        </div>
+
+        <!-- <div class="pt-20 border-t border-zinc-800"> -->
+        <!--   <p -->
+        <!--     class="flex items-center justify-center gap-2 text-sm font-bold tracking-widest uppercase" -->
+        <!--   > -->
+        <!--     Proudly Open Source -->
+        <!--     <span class="text-red-500">♥</span> -->
+        <!--   </p> -->
+        <!--   <Button -->
+        <!--     classLI="rounded-full px-2 py-1 text-xl bg-linear-to-b from-[#CBCBCB] to-[#A5A5A5] text-shadow-none border-[#A5A5A5] border-3" -->
+        <!--     label="GitHub" -->
+        <!--   /> -->
+        <!-- </div> -->
+      </div>
+    </div>
+  </section>
+</BaseLayout>
 <script>
   import { createAuthClient } from "better-auth/client";
   const authClient = createAuthClient();
+
+  // Handle page load
+  window.addEventListener('load', () => {
+    document.body.classList.add('loaded');
+    // @ts-ignore
+    window.hideLoading?.();
+  });
+
+  // Just in case load event already fired
+  if (document.readyState === 'complete') {
+    document.body.classList.add('loaded');
+    // @ts-ignore
+    window.hideLoading?.();
+  }
+
   document.getElementById("login")?.addEventListener("click", async () => {
+    // @ts-ignore
+    window.showLoading?.();
     await authClient.signIn.social({ provider: "google" });
   });
 </script>

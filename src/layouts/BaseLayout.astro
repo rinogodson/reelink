@@ -1,0 +1,46 @@
+---
+import "../styles/global.css";
+import LoadingScreen from "../components/LoadingScreen.astro";
+
+interface Props {
+  title?: string;
+}
+
+const { title = "Reelink" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Reelink - Let Comments Be Comments" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <style>
+      /* Hide body content until JS hides the loader */
+      body {
+        opacity: 0;
+        transition: opacity 0.3s ease-in;
+      }
+      body.loaded {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body class="bg-linear-to-b from-[#0E131B] to-[#0B0B0B]">
+    <LoadingScreen />
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  html,
+  body {
+    background-color: black;
+    scroll-behavior: smooth;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+</style>

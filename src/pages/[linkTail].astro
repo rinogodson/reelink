@@ -65,38 +65,63 @@ const userLinks = profile.links || [];
         const pasteBar = document.getElementById('paste-bar');
 
         if (pasteBar) {
-            // Prevent all keydown events to stop typing
-            pasteBar.addEventListener('keydown', (e) => {
+            const handlePasteData = (pastedValue) => {
+                pastedValue = pastedValue.trim();
+                if (!pastedValue) return;
+
+                const match = userLinks.find(link => 
+                    link.reelURL.trim() === pastedValue || 
+                    link.reelURL.trim().split('?')[0] === pastedValue.split('?')[0]
+                );
+
+                if (match) {
+                    pasteBar.value = pastedValue;
+                    pasteBar.classList.add('success');
+                    setTimeout(() => {
+                        const dest = match.destURL;
+                        pasteBar.value = "";
+                        pasteBar.classList.remove('success');
+                        window.location.href = dest;
+                    }, 600);
+                } else {
+                    pasteBar.value = pastedValue;
+                    pasteBar.classList.add('error');
+                    setTimeout(() => {
+                        pasteBar.value = "";
+                        pasteBar.classList.remove('error');
+                    }, 600);
+                }
+            };
+
+            // Global paste listener
+            document.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const pastedValue = e.clipboardData.getData('text');
+                handlePasteData(pastedValue);
+            });
+
+            // Handle keyboard: focus on paste shortcut, and prevent typing
+            document.addEventListener('keydown', (e) => {
                 const isPasteShortcut = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'v';
-                if (!isPasteShortcut) {
-                    e.preventDefault();
+                
+                // Focus paste bar on shortcut if not focused
+                if (isPasteShortcut && document.activeElement !== pasteBar) {
+                    pasteBar.focus();
+                }
+
+                // If focused on paste bar, prevent typing but allow shortcuts and navigation
+                if (document.activeElement === pasteBar) {
+                    const isFunctionalKey = e.key.length > 1 || e.metaKey || e.ctrlKey || e.altKey;
+                    if (!isFunctionalKey && !isPasteShortcut) {
+                        e.preventDefault();
+                    }
                 }
             });
 
-            pasteBar.addEventListener('paste', (e) => {
-                // Wait for the input to be updated with the pasted content
-                setTimeout(() => {
-                    const pastedValue = pasteBar.value.trim();
-                    if (!pastedValue) return;
-
-                    const match = userLinks.find(link => 
-                        link.reelURL.trim() === pastedValue || 
-                        link.reelURL.trim().split('?')[0] === pastedValue.split('?')[0]
-                    );
-
-                    if (match) {
-                        pasteBar.classList.add('success');
-                        setTimeout(() => {
-                            window.location.href = match.destURL;
-                        }, 600);
-                    } else {
-                        pasteBar.classList.add('error');
-                        setTimeout(() => {
-                            pasteBar.value = "";
-                            pasteBar.classList.remove('error');
-                        }, 600);
-                    }
-                }, 0);
+            // Clear input on page show (handles back button)
+            window.addEventListener('pageshow', (event) => {
+                pasteBar.value = "";
+                pasteBar.classList.remove('success', 'error');
             });
         }
     </script>

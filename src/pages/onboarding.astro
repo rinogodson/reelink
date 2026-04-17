@@ -1,111 +1,196 @@
 ---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Input from "../components/Input.astro";
+import Button from "../components/Button.astro";
 ---
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Onboarding | Reelink</title>
-</head>
-<body>
-    <div id="onboarding-form" style="max-width: 400px; margin: 50px auto; font-family: sans-serif;">
-        <h1>Welcome!</h1>
-        <p>Complete your profile to get started.</p>
-        
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
-            <div>
-                <label for="linkTail">Link Tail (e.g. /my-links):</label><br>
-                <input type="text" id="linkTail" placeholder="my-links" style="width: 100%; padding: 8px; margin-top: 5px;">
-            </div>
-            <div>
-                <label for="igAcc">Instagram Account (without @):</label><br>
-                <input type="text" id="igAcc" placeholder="instagram_user" style="width: 100%; padding: 8px; margin-top: 5px;">
-            </div>
-            <div>
-                <label for="textName">Display Name for Links:</label><br>
-                <input type="text" id="textName" placeholder="My Awesome Links" style="width: 100%; padding: 8px; margin-top: 5px;">
-            </div>
-            
-            <button id="finish" style="padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; margin-top: 10px;">
-                Complete Onboarding
-            </button>
+
+<BaseLayout>
+  <div
+    id="onboarding-form"
+    class="text-[#E9E9E9] h-screen font-[Inter] items-center flex flex-col gap-4"
+  >
+    <h1 class="text-4xl font-medium h-[30%] justify-center items-center flex">
+      Create Account
+    </h1>
+
+    <div class="flex flex-col gap-6 mt-10 w-full md:w-[50%] items-center">
+      <div class="w-full text-center max-w-sm">
+        <Input label="IG Acc Link" id="igAcc" />
+      </div>
+
+      <div class="flex text-center flex-col gap-3 relative w-full max-w-sm">
+        <label
+          for="textName"
+          id="label-textName"
+          class="font-[Jaro] text-4xl uppercase tracking-wider transition-all duration-200"
+        >
+          Display Name
+        </label>
+        <Input label="Display Name" id="textName" />
+      </div>
+
+      <div class="flex text-center flex-col relative w-full max-w-sm">
+        <label
+          for="linkTail"
+          id="label-linkTail"
+          class="text-2xl font-semibold transition-all duration-200"
+        >
+          <span>reelink.cc/</span><span id="preview-tail" class="text-blue-400"
+            >link-tail</span
+          >
+        </label>
+        <div class="mt-2">
+          <Input label="Link Tail" id="linkTail" />
         </div>
+      </div>
+
+      <Button
+        id="finish"
+        label="Continue"
+        classLI="mt-10 px-8 font-bold from-[#009CFF] to-[#0061F5] border-[#004DC4] rounded-full bg-linear-to-b text-white "
+      />
     </div>
+  </div>
 
-    <div id="success-state" style="display: none; max-width: 400px; margin: 50px auto; font-family: sans-serif; text-align: center;">
-        <h1>You're all set!</h1>
-        <p>Your Reelink is ready:</p>
-        
-        <div style="background: #f4f4f4; padding: 15px; border-radius: 8px; margin: 20px 0; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-            <code id="final-link" style="font-weight: bold; font-size: 1.1rem; word-break: break-all;">reelin.cc/</code>
-            <button id="copy-btn" style="padding: 8px 12px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; white-space: nowrap;">
-                Copy
-            </button>
-        </div>
-
-        <button id="continue" style="padding: 12px 20px; background: #007bff; color: white; border: none; cursor: pointer; width: 100%; border-radius: 4px; font-size: 1rem;">
-            Continue to Dashboard
-        </button>
+  <div
+    id="success-state"
+    style="display: none;"
+    class="text-[#E9E9E9] h-screen font-[Inter] flex flex-col gap-4 justify-center items-center"
+  >
+    <h1
+      class="text-4xl font-medium h-[30%] justify-center items-center flex flex-col gap-2"
+    >
+      You're all set!
+    </h1>
+    <div class="flex items-center justify-center gap-1 flex-col">
+      <div
+        id="copy-btn"
+        class="bg-white/10 px-6 font-[Rubik] rounded-full border border-white/20 py-3 w-fit text-2xl shadow-[0px_2px_29.1px_rgba(0,0,0,0.5),inset_0px_-2px_3px_rgba(0,0,0,0.25),inset_0px_3px_3px_rgba(255,255,255,0.1)] text-shadow-[0_1px_2px_rgba(0,0,0,0.5)] cursor-pointer"
+      >
+        <div id="final-link">reelink.cc/</div>
+      </div>
+      <label class="text-sm text-gray-400 mt-2">Click the link to copy</label>
+      <Button
+        id="continue"
+        label="Continue to Dashboard"
+        classLI="mt-10 px-8 font-bold from-[#009CFF] to-[#0061F5] border-[#004DC4] rounded-full bg-linear-to-b text-white "
+      />
     </div>
+  </div>
 
-    <script>
+  <style>
+    .has-value #label-textName {
+      transform: translateY(-5px);
+      color: #fff;
+    }
+
+    .has-value #label-linkTail {
+      transform: translateY(-5px);
+    }
+  </style>
+
+  <script>
     const onboardingForm = document.getElementById("onboarding-form");
     const successState = document.getElementById("success-state");
     const finalLinkElem = document.getElementById("final-link");
     const copyBtn = document.getElementById("copy-btn");
     const continueBtn = document.getElementById("continue");
 
+    // Handle page load
+    window.addEventListener('load', () => {
+      document.body.classList.add('loaded');
+      // @ts-ignore
+      window.hideLoading?.();
+    });
+
+    if (document.readyState === 'complete') {
+      document.body.classList.add('loaded');
+      // @ts-ignore
+      window.hideLoading?.();
+    }
+
     document.getElementById("finish")?.addEventListener("click", async () => {
-        const linkTail = (document.getElementById("linkTail") as HTMLInputElement).value;
-        const igAcc = (document.getElementById("igAcc") as HTMLInputElement).value;
-        const textName = (document.getElementById("textName") as HTMLInputElement).value;
+      const linkTail = (document.getElementById("linkTail") as HTMLInputElement)
+        .value;
+      const igAcc = (document.getElementById("igAcc") as HTMLInputElement)
+        .value;
+      const textName = (document.getElementById("textName") as HTMLInputElement)
+        .value;
 
-        if (!linkTail || !igAcc || !textName) {
-            alert("Please fill in all fields.");
-            return;
-        }
+      if (!linkTail || !igAcc || !textName) {
+        alert("Please fill in all fields.");
+        return;
+      }
 
-        const response = await fetch("/api/complete-onboarding", { 
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ linkTail, igAcc, textName })
+      // @ts-ignore
+      window.showLoading?.();
+
+      try {
+        const response = await fetch("/api/complete-onboarding", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ linkTail, igAcc, textName }),
         });
 
         if (response.ok) {
-            if (onboardingForm && successState && finalLinkElem) {
-                const fullLink = `reelin.cc/${linkTail}`;
-                finalLinkElem.textContent = fullLink;
-                onboardingForm.style.display = "none";
-                successState.style.display = "block";
-            } else {
-                window.location.href = "/dashboard";
-            }
+          if (onboardingForm && successState && finalLinkElem) {
+            finalLinkElem.textContent = `reelink.cc/${linkTail}`;
+            onboardingForm.style.display = "none";
+            successState.style.display = "flex";
+          } else {
+            window.location.href = "/dashboard";
+          }
         } else {
-            alert("Failed to complete onboarding.");
+          alert("Failed to complete onboarding.");
         }
+      } finally {
+        // @ts-ignore
+        window.hideLoading?.();
+      }
     });
 
     copyBtn?.addEventListener("click", async () => {
-        if (finalLinkElem?.textContent) {
-            try {
-                await navigator.clipboard.writeText(finalLinkElem.textContent);
-                const originalText = copyBtn.textContent;
-                copyBtn.textContent = "Copied!";
-                copyBtn.style.background = "#218838";
-                setTimeout(() => {
-                    copyBtn.textContent = originalText;
-                    copyBtn.style.background = "#28a745";
-                }, 2000);
-            } catch (err) {
-                alert("Failed to copy to clipboard.");
-            }
+      if (finalLinkElem?.textContent) {
+        try {
+          await navigator.clipboard.writeText(finalLinkElem.textContent);
+          const originalHTML = copyBtn.innerHTML;
+          copyBtn.innerHTML = `<div class="text-center w-full">Copied!</div>`;
+          setTimeout(() => {
+            copyBtn.innerHTML = originalHTML;
+          }, 2000);
+        } catch (err) {
+          alert("Failed to copy.");
         }
+      }
     });
 
     continueBtn?.addEventListener("click", () => {
-        window.location.href = "/dashboard";
+      window.location.href = "/dashboard";
     });
-    </script>
-</body>
-</html>
+
+    const nameInput = document.getElementById("textName") as HTMLInputElement;
+    const nameLabel = document.getElementById("label-textName");
+    const nameWrapper = nameLabel?.parentElement;
+
+    nameInput?.addEventListener("input", () => {
+      const val = nameInput.value;
+      if (nameLabel)
+        nameLabel.textContent = val.length > 0 ? val : "Display Name";
+      if (val.length > 0) nameWrapper?.classList.add("has-value");
+      else nameWrapper?.classList.remove("has-value");
+    });
+
+    const tailInput = document.getElementById("linkTail") as HTMLInputElement;
+    const tailPreview = document.getElementById("preview-tail");
+    const tailWrapper =
+      document.getElementById("label-linkTail")?.parentElement;
+
+    tailInput?.addEventListener("input", () => {
+      const val = tailInput.value;
+      if (tailPreview)
+        tailPreview.textContent = val.length > 0 ? val : "link-tail";
+      if (val.length > 0) tailWrapper?.classList.add("has-value");
+      else tailWrapper?.classList.remove("has-value");
+    });
+  </script>
+</BaseLayout>

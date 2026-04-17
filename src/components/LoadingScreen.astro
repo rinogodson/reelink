@@ -1,0 +1,74 @@
+---
+---
+<div
+  id="loading-screen"
+  class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity duration-300"
+>
+  <div class="apple-spinner">
+    {Array.from({ length: 12 }).map((_, i) => (
+      <div class={`bar bar-${i + 1}`}></div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .apple-spinner {
+    position: relative;
+    width: 50px;
+    height: 50px;
+  }
+
+  .bar {
+    position: absolute;
+    width: 10%;
+    height: 30%;
+    background: #ffffff;
+    left: 45%;
+    top: 35%;
+    opacity: 0;
+    border-radius: 50px;
+    animation: fade 1s linear infinite;
+  }
+
+  @keyframes fade {
+    from { opacity: 1; }
+    to { opacity: 0.2; }
+  }
+
+  .bar-1 { transform: rotate(0deg) translate(0, -130%); animation-delay: 0s; }
+  .bar-2 { transform: rotate(30deg) translate(0, -130%); animation-delay: -0.916s; }
+  .bar-3 { transform: rotate(60deg) translate(0, -130%); animation-delay: -0.833s; }
+  .bar-4 { transform: rotate(90deg) translate(0, -130%); animation-delay: -0.75s; }
+  .bar-5 { transform: rotate(120deg) translate(0, -130%); animation-delay: -0.666s; }
+  .bar-6 { transform: rotate(150deg) translate(0, -130%); animation-delay: -0.583s; }
+  .bar-7 { transform: rotate(180deg) translate(0, -130%); animation-delay: -0.5s; }
+  .bar-8 { transform: rotate(210deg) translate(0, -130%); animation-delay: -0.416s; }
+  .bar-9 { transform: rotate(240deg) translate(0, -130%); animation-delay: -0.333s; }
+  .bar-10 { transform: rotate(270deg) translate(0, -130%); animation-delay: -0.25s; }
+  .bar-11 { transform: rotate(300deg) translate(0, -130%); animation-delay: -0.166s; }
+  .bar-12 { transform: rotate(330deg) translate(0, -130%); animation-delay: -0.083s; }
+</style>
+
+<script is:inline>
+  window.showLoading = () => {
+    const loader = document.getElementById('loading-screen');
+    if (loader) {
+      loader.style.opacity = '1';
+      loader.style.pointerEvents = 'auto';
+      loader.style.display = 'flex';
+    }
+  };
+
+  window.hideLoading = () => {
+    const loader = document.getElementById('loading-screen');
+    if (loader) {
+      loader.style.opacity = '0';
+      loader.style.pointerEvents = 'none';
+      setTimeout(() => {
+        if (loader.style.opacity === '0') {
+           loader.style.display = 'none';
+        }
+      }, 300);
+    }
+  };
+</script>

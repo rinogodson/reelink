@@ -2,6 +2,7 @@
 import { db, auth } from "../lib/auth";
 import { links } from "../db/schema";
 import { eq, desc } from "drizzle-orm";
+import BaseLayout from "../layouts/BaseLayout.astro";
 
 const session = await auth.api.getSession({ headers: Astro.request.headers });
 if (!session) {
@@ -14,14 +15,8 @@ const userLinks = await db
     .where(eq(links.userId, session.user.id))
     .orderBy(desc(links.createdAt));
 ---
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Reelink</title>
-</head>
-<body>
-    <div style="max-width: 800px; margin: 50px auto; font-family: sans-serif;">
+<BaseLayout title="Dashboard | Reelink">
+    <div style="max-width: 800px; margin: 50px auto; font-family: sans-serif; color: white;">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <h1>Your Links</h1>
             <div>
@@ -36,7 +31,7 @@ const userLinks = await db
             ) : (
                 <table style="width: 100%; border-collapse: collapse;">
                     <thead>
-                        <tr style="border-bottom: 2px solid #ddd;">
+                        <tr style="border-bottom: 2px solid #555;">
                             <th style="text-align: left; padding: 10px;">Name</th>
                             <th style="text-align: left; padding: 10px;">Reel URL</th>
                             <th style="text-align: left; padding: 10px;">Destination</th>
@@ -45,7 +40,7 @@ const userLinks = await db
                     </thead>
                     <tbody>
                         {userLinks.map(link => (
-                            <tr style="border-bottom: 1px solid #eee;">
+                            <tr style="border-bottom: 1px solid #333;">
                                 <td style="padding: 10px;">
                                     <a href={`/links/${link.id}`} style="color: #007bff; text-decoration: none; font-weight: bold;">{link.name}</a>
                                 </td>
@@ -63,10 +58,25 @@ const userLinks = await db
     <script>
         import { createAuthClient } from "better-auth/client";
         const authClient = createAuthClient();
+
+        // Handle page load
+        window.addEventListener('load', () => {
+          document.body.classList.add('loaded');
+          // @ts-ignore
+          window.hideLoading?.();
+        });
+
+        if (document.readyState === 'complete') {
+          document.body.classList.add('loaded');
+          // @ts-ignore
+          window.hideLoading?.();
+        }
+
         document.getElementById("logout")?.addEventListener("click", async () => {
+            // @ts-ignore
+            window.showLoading?.();
             await authClient.signOut();
             window.location.href = "/";
         });
     </script>
-</body>
-</html>
+</BaseLayout>

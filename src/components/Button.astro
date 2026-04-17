@@ -1,0 +1,21 @@
+---
+interface Props {
+  label: string;
+  classLI?: string;
+  icon?: any;
+  id?: string;
+}
+
+const { label, classLI, icon: Icon } = Astro.props;
+---
+
+<button
+  id={Astro.props.id}
+  class:list={[
+    classLI,
+    "font-[Rubik] w-fit inline-flex font-medium sm:text-2xl text-xl items-center justify-center px-5 py-3 rounded-3xl transition-colors text-black bg-linear-to-b border hover:brightness-105 active:brightness-90 focus:outline-none shadow-[0px_2px_29.1px_rgba(0,0,0,0.5),inset_0px_-2px_3px_rgba(0,0,0,0.25),inset_0px_3px_3px_rgba(255,255,255,0.5)] text-shadow-[0_1px_2px_rgba(0,0,0,0.5)]",
+  ]}
+>
+  {Icon && <Icon class="w-6 aspect-square mr-3" />}
+  <span>{label}</span>
+</button>
