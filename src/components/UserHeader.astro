@@ -13,7 +13,9 @@ const bioLink = linkTail ? `reelink.cc/${linkTail}` : "";
 
 <div class="flex items-center justify-between py-6 mb-8">
   <div class="flex items-center gap-4 w-full">
-    <div class="h-12 w-12 shrink-0 relative">
+    <div
+      class="h-20 w-20 shrink-0 relative border-2 border-white/20 rounded-full overflow-hidden"
+    >
       {
         image ? (
           <>
@@ -43,7 +45,7 @@ const bioLink = linkTail ? `reelink.cc/${linkTail}` : "";
           <button
             id="copy-bio-link"
             data-link={bioLink}
-            class="bg-[#D9D9D9]/22 hover:bg-white/10 rounded-full w-[8em] px-3 py-1 flex justify-center items-center font-[Rubik] transition-colors"
+            class="bg-[#D9D9D9]/22 hover:bg-white/10 rounded-full w-[7em] px-3 py-1 flex justify-center items-center font-[Rubik] transition-colors shadow-[0px_2px_29.1px_rgba(0,0,0,0.5),inset_0px_-2px_3px_rgba(0,0,0,0.25),inset_0px_1px_1px_rgba(255,255,255,0.2)] text-shadow-[0_1px_1px_rgba(0,0,0,0.2)]"
           >
             <img
               src={copyIcon.src}
@@ -54,7 +56,7 @@ const bioLink = linkTail ? `reelink.cc/${linkTail}` : "";
           </button>
           <a href="/settings" title="Settings">
             <button
-              class="bg-[#D9D9D9]/22 hover:bg-white/10 rounded-full w-fit px-3 py-1 flex justify-center items-center font-[Rubik] transition-colors"
+              class="bg-[#D9D9D9]/22 hover:bg-white/10 rounded-full w-fit px-3 py-1 flex justify-center items-center font-[Rubik] transition-colors shadow-[0px_2px_29.1px_rgba(0,0,0,0.5),inset_0px_-2px_3px_rgba(0,0,0,0.25),inset_0px_1px_1px_rgba(255,255,255,0.2)] text-shadow-[0_1px_1px_rgba(0,0,0,0.2)]"
             >
               <span>EDIT</span>
             </button>
@@ -62,7 +64,7 @@ const bioLink = linkTail ? `reelink.cc/${linkTail}` : "";
         </div>
         <button
           id="logout"
-          class="px-2 py-1 bg-red-600/60 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+          class="px-3 py-1 h-full text-sm bg-red-600/60 hover:bg-red-700 text-white font-medium rounded-lg transition-colors shadow-[0px_2px_29.1px_rgba(0,0,0,0.5),inset_0px_-2px_3px_rgba(0,0,0,0.25),inset_0px_1px_1px_rgba(255,255,255,0.2)] text-shadow-[0_1px_1px_rgba(0,0,0,0.2)]"
         >
           Logout
         </button>

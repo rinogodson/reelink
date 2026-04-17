@@ -4,6 +4,8 @@ import { links } from "../../db/schema";
 import { eq, and } from "drizzle-orm";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import BackButton from "../../components/BackButton.astro";
+import Button from "../../components/Button.astro";
+import Input from "../../components/Input.astro";
 
 const { id } = Astro.params;
 
@@ -25,245 +27,169 @@ const link = await db
 if (!link) {
   return Astro.redirect("/dashboard");
 }
+
+const createdDate = new Date(link.createdAt);
+const dateStr = createdDate.toLocaleDateString("en-US", {
+  month: "long",
+  day: "numeric",
+  year: "numeric",
+});
+const timeStr = createdDate.toLocaleTimeString("en-US", {
+  hour: "numeric",
+  minute: "2-digit",
+  second: "2-digit",
+});
 ---
 
 <BaseLayout title={`${link.name} | Reelink`}>
-  <div
-    style="max-width: 600px; margin: 20px auto; font-family: sans-serif; color: white; padding: 0 20px;"
-  >
-    <BackButton href="/dashboard" label="Dashboard" />
+  <div class="max-w-150 mx-auto p-6 font-sans flex flex-col min-h-screen">
+    <div class="h-[30%] w-full max-w-sm justify-center flex flex-col gap-4">
+      <BackButton href="/dashboard" label="Dashboard" />
+    </div>
 
-    <span
-      class="text-2xl font-bold text-white max-w-[10ch] overflow-hidden text-ellipsis whitespace-nowrap"
+    <h1
+      class="text-3xl mt-4 font-extrabold text-white mb-8 truncate tracking-wide"
     >
       {link.name}
-    </span>
-    <button
-      id="editBtn"
-      style="padding: 5px 15px; background: #444; color: white; border: none; cursor: pointer; border-radius: 5px;"
-      >Edit</button
-    >
+    </h1>
+
+    <div class="flex flex-col gap-6">
+      <div
+        class="w-full text-start text-[#ECECEC] max-w-sm gap-3 flex flex-col"
+      >
+        <label
+          class="font-[Rubik] text-xl opacity-50 uppercase tracking-wider transition-all duration-200"
+        >
+          REEL LINK
+        </label>
+        <Input
+          label="Reel Link"
+          value={link.reelURL}
+          id="reelURL"
+          readonly={true}
+        />
+      </div>
+      <div
+        class="w-full text-start text-[#ECECEC] max-w-sm gap-3 flex flex-col"
+      >
+        <label
+          class="font-[Rubik] text-xl opacity-50 uppercase tracking-wider transition-all duration-200"
+        >
+          Destination Link
+        </label>
+        <Input
+          label="Destination Link"
+          value={link.destURL}
+          id="destURL"
+          readonly={true}
+        />
+      </div>
+    </div>
+
     <div
-      style="margin-top: 30px; padding: 20px; border: 1px solid #333; border-radius: 8px; background: #111;"
+      class="mt-8 flex flex-col gap-2 text-[#4f5460] text-lg font-medium tracking-wide"
     >
-      <div
-        style="display: flex; justify-content: space-between; align-items: flex-start;"
-      >
-        <h1 style="margin-top: 0;">{link.name}</h1>
-      </div>
+      <p>Created on: {dateStr}</p>
+      <p>Time: {timeStr}</p>
+    </div>
 
-      <p>
-        <strong>Link ID:</strong>
-        <span style="color: #888;">{link.id}</span>
-      </p>
+    <div class="mt-auto pt-16 pb-4 flex justify-between gap-4">
+      <Button
+        id="deleteBtn"
+        label="Delete"
+        data-id={link.id}
+        classLI="mt-10 px-8 font-bold from-[#D01114] to-[#880507] border-[#212121] rounded-full bg-linear-to-b text-white "
+      />
 
-      <div id="view-mode" class="space-y-4">
-        <p>
-          <strong>Instagram Reel:</strong>
-          <br />
-          <a
-            href={link.reelURL}
-            id="display-reelURL"
-            target="_blank"
-            style="color: #007bff; word-break: break-all;">{link.reelURL}</a
-          >
-        </p>
-        <p>
-          <strong>Destination URL:</strong>
-          <br />
-          <a
-            href={link.destURL}
-            id="display-destURL"
-            target="_blank"
-            style="color: #007bff; word-break: break-all;">{link.destURL}</a
-          >
-        </p>
-      </div>
-
-      <div id="edit-mode" style="display: none;" class="space-y-4">
-        <div style="margin-bottom: 15px;">
-          <label style="display: block; margin-bottom: 5px; font-weight: bold;"
-            >Instagram Reel URL:</label
-          >
-          <input
-            type="text"
-            id="edit-reelURL"
-            value={link.reelURL}
-            style="width: 100%; padding: 8px; background: #222; border: 1px solid #444; color: white; border-radius: 4px;"
-          />
-        </div>
-        <div style="margin-bottom: 15px;">
-          <label style="display: block; margin-bottom: 5px; font-weight: bold;"
-            >Destination URL:</label
-          >
-          <input
-            type="text"
-            id="edit-destURL"
-            value={link.destURL}
-            style="width: 100%; padding: 8px; background: #222; border: 1px solid #444; color: white; border-radius: 4px;"
-          />
-        </div>
-        <div style="display: flex; gap: 10px;">
-          <button
-            id="saveBtn"
-            style="padding: 10px 20px; background: #28a745; color: white; border: none; cursor: pointer; border-radius: 5px;"
-            >Save Changes</button
-          >
-          <button
-            id="cancelBtn"
-            style="padding: 10px 20px; background: #666; color: white; border: none; cursor: pointer; border-radius: 5px;"
-            >Cancel</button
-          >
-        </div>
-      </div>
-
-      <p style="margin-top: 20px;">
-        <strong>Created:</strong>
-        <span style="color: #888;"
-          >{new Date(link.createdAt).toLocaleString()}</span
-        >
-      </p>
-
-      <div
-        style="margin-top: 30px; border-top: 1px solid #333; padding-top: 20px;"
-      >
-        <button
-          id="deleteBtn"
-          data-id={link.id}
-          style="padding: 10px 20px; background: #dc3545; color: white; border: none; cursor: pointer; border-radius: 5px;"
-        >
-          Delete Link
-        </button>
-      </div>
+      <Button
+        id="editBtn"
+        label="Edit This"
+        classLI="mt-10 px-8 font-bold from-[#009CFF] to-[#0061F5] border-[#212121] rounded-full bg-linear-to-b text-white "
+      />
     </div>
   </div>
 
   <script>
-    // Handle page load
     window.addEventListener("load", () => {
       document.body.classList.add("loaded");
-      // @ts-ignore
-      window.hideLoading?.();
+      (window as any).hideLoading?.();
     });
 
     if (document.readyState === "complete") {
       document.body.classList.add("loaded");
-      // @ts-ignore
-      window.hideLoading?.();
+      (window as any).hideLoading?.();
     }
 
     const editBtn = document.getElementById("editBtn");
-    const saveBtn = document.getElementById("saveBtn");
-    const cancelBtn = document.getElementById("cancelBtn");
-    const viewMode = document.getElementById("view-mode");
-    const editMode = document.getElementById("edit-mode");
+    const deleteBtn = document.getElementById("deleteBtn");
+    const reelInput = document.getElementById("reelURL") as HTMLInputElement;
+    const destInput = document.getElementById("destURL") as HTMLInputElement;
 
-    editBtn?.addEventListener("click", () => {
-      if (viewMode && editMode) {
-        viewMode.style.display = "none";
-        editMode.style.display = "block";
-        editBtn.style.display = "none";
-      }
-    });
+    editBtn?.addEventListener("click", async () => {
+      if (editBtn.textContent?.trim() === "Edit This") {
+        reelInput.removeAttribute("readonly");
+        destInput.removeAttribute("readonly");
+        reelInput.focus();
+        editBtn.textContent = "Save";
+      } else {
+        const reelURL = reelInput.value;
+        const destURL = destInput.value;
+        const id = window.location.pathname.split("/").pop();
 
-    cancelBtn?.addEventListener("click", () => {
-      if (viewMode && editMode && editBtn) {
-        viewMode.style.display = "block";
-        editMode.style.display = "none";
-        editBtn.style.display = "block";
-      }
-    });
-
-    saveBtn?.addEventListener("click", async () => {
-      const reelURL = (
-        document.getElementById("edit-reelURL") as HTMLInputElement
-      ).value;
-      const destURL = (
-        document.getElementById("edit-destURL") as HTMLInputElement
-      ).value;
-      const id = window.location.pathname.split("/").pop();
-
-      if (!reelURL || !destURL) {
-        alert("Please fill in all fields.");
-        return;
-      }
-
-      // @ts-ignore
-      window.showLoading?.();
-
-      try {
-        const response = await fetch("/api/links/update", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id, reelURL, destURL }),
-        });
-
-        if (response.ok) {
-          // Update the display without a full reload for speed
-          const displayReel = document.getElementById(
-            "display-reelURL",
-          ) as HTMLAnchorElement;
-          const displayDest = document.getElementById(
-            "display-destURL",
-          ) as HTMLAnchorElement;
-          if (displayReel) {
-            displayReel.href = reelURL;
-            displayReel.textContent = reelURL;
-          }
-          if (displayDest) {
-            displayDest.href = destURL;
-            displayDest.textContent = destURL;
-          }
-
-          // Switch back to view mode
-          if (viewMode && editMode && editBtn) {
-            viewMode.style.display = "block";
-            editMode.style.display = "none";
-            editBtn.style.display = "block";
-          }
-        } else {
-          alert("Failed to update link.");
+        if (!reelURL || !destURL) {
+          alert("Please fill in all fields.");
+          return;
         }
-      } catch (err) {
-        console.error("Update failed:", err);
-        alert("An error occurred.");
-      } finally {
-        // @ts-ignore
-        window.hideLoading?.();
-      }
-    });
 
-    document
-      .getElementById("deleteBtn")
-      ?.addEventListener("click", async (e) => {
-        const id = (e.target as HTMLButtonElement).dataset.id;
-        if (!confirm("Are you sure you want to delete this link?")) return;
-
-        // @ts-ignore
-        window.showLoading?.();
+        (window as any).showLoading?.();
 
         try {
-          const response = await fetch("/api/links/delete", {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ id }),
+          const response = await fetch("/api/links/update", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id, reelURL, destURL }),
           });
 
           if (response.ok) {
-            window.location.href = "/dashboard";
+            reelInput.setAttribute("readonly", "true");
+            destInput.setAttribute("readonly", "true");
+            editBtn.textContent = "Edit This";
           } else {
-            alert("Failed to delete link.");
-            // @ts-ignore
-            window.hideLoading?.();
+            alert("Failed to update link.");
           }
         } catch (err) {
-          console.error("Delete failed:", err);
-          // @ts-ignore
-          window.hideLoading?.();
           alert("An error occurred.");
+        } finally {
+          (window as any).hideLoading?.();
         }
-      });
+      }
+    });
+
+    deleteBtn?.addEventListener("click", async (e) => {
+      const id = (e.target as HTMLButtonElement).dataset.id;
+      if (!confirm("Are you sure you want to delete this link?")) return;
+
+      (window as any).showLoading?.();
+
+      try {
+        const response = await fetch("/api/links/delete", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id }),
+        });
+
+        if (response.ok) {
+          window.location.href = "/dashboard";
+        } else {
+          alert("Failed to delete link.");
+          (window as any).hideLoading?.();
+        }
+      } catch (err) {
+        (window as any).hideLoading?.();
+        alert("An error occurred.");
+      }
+    });
   </script>
 </BaseLayout>

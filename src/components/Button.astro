@@ -4,12 +4,14 @@ interface Props {
   classLI?: string;
   icon?: any;
   id?: string;
+  data_id?: string;
 }
 
 const { label, classLI, icon: Icon } = Astro.props;
 ---
 
 <button
+  data-id={Astro.props.data_id}
   id={Astro.props.id}
   class:list={[
     classLI,
