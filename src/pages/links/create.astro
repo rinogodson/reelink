@@ -85,6 +85,19 @@ import Button from "../../components/Button.astro";
           return;
         }
 
+        const reelRegex = /^https:\/\/(www\.)?instagram\.com\/reel\/[a-zA-Z0-9._-]+\/?(\?.*)?$/;
+        if (!reelRegex.test(reelURL)) {
+          alert("Invalid Instagram Reel Link");
+          return;
+        }
+
+        try {
+          new URL(destURL);
+        } catch (e) {
+          alert("Invalid Destination URL");
+          return;
+        }
+
         // @ts-ignore
         window.showLoading?.();
 

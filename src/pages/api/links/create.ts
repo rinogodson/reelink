@@ -12,6 +12,17 @@ export const POST: APIRoute = async (ctx) => {
     return new Response("Missing fields", { status: 400 });
   }
 
+  const reelRegex = /^https:\/\/(www\.)?instagram\.com\/reel\/[a-zA-Z0-9._-]+\/?(\?.*)?$/;
+  if (!reelRegex.test(reelURL)) {
+    return new Response("Invalid Instagram Reel Link", { status: 400 });
+  }
+
+  try {
+    new URL(destURL);
+  } catch (e) {
+    return new Response("Invalid Destination URL", { status: 400 });
+  }
+
   // Generate a random ID for the link
   const linkID = Math.random().toString(36).substring(2, 10);
 

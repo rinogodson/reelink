@@ -141,6 +141,19 @@ const timeStr = createdDate.toLocaleTimeString("en-US", {
           return;
         }
 
+        const reelRegex = /^https:\/\/(www\.)?instagram\.com\/reel\/[a-zA-Z0-9._-]+\/?(\?.*)?$/;
+        if (!reelRegex.test(reelURL)) {
+          alert("Invalid Instagram Reel Link");
+          return;
+        }
+
+        try {
+          new URL(destURL);
+        } catch (e) {
+          alert("Invalid Destination URL");
+          return;
+        }
+
         (window as any).showLoading?.();
 
         try {
@@ -155,7 +168,8 @@ const timeStr = createdDate.toLocaleTimeString("en-US", {
             destInput.setAttribute("readonly", "true");
             editBtn.textContent = "Edit This";
           } else {
-            alert("Failed to update link.");
+            const errorText = await response.text();
+            alert(errorText || "Failed to update link.");
           }
         } catch (err) {
           alert("An error occurred.");

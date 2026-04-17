@@ -13,6 +13,19 @@ export const POST: APIRoute = async (ctx) => {
     return new Response("Missing fields", { status: 400 });
   }
 
+  const igRegex = /^https:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9._]+\/?(\?.*)?$/;
+  if (!igRegex.test(igAcc)) {
+    return new Response("Invalid Instagram Account Link", { status: 400 });
+  }
+
+  if (/\s/.test(linkTail)) {
+    return new Response("Link Tail cannot contain spaces", { status: 400 });
+  }
+
+  if (textName.length >= 18) {
+    return new Response("Display Name must be less than 18 characters", { status: 400 });
+  }
+
   await db
     .update(user)
     .set({ 

@@ -2,12 +2,25 @@ import { defineMiddleware } from "astro:middleware";
 import { auth } from "./lib/auth";
 
 export const onRequest = defineMiddleware(async (context, next) => {
+  const { pathname } = context.url;
+  const isSystemPath =
+    pathname === "/" ||
+    pathname === "/dashboard" ||
+    pathname === "/onboarding" ||
+    pathname === "/settings" ||
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/links");
+
+  if (!isSystemPath) {
+    return next();
+  }
+
   const session = await auth.api.getSession({
     headers: context.request.headers,
   });
-  const isAuthPage = context.url.pathname.startsWith("/api/auth");
-  const isOnboarding = context.url.pathname === "/onboarding";
-  const isHome = context.url.pathname === "/";
+  const isAuthPage = pathname.startsWith("/api/auth");
+  const isOnboarding = pathname === "/onboarding";
+  const isHome = pathname === "/";
 
   if (isAuthPage) return next();
 

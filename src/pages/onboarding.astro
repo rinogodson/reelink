@@ -119,6 +119,22 @@ import Button from "../components/Button.astro";
         return;
       }
 
+      const igRegex = /^https:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9._]+\/?(\?.*)?$/;
+      if (!igRegex.test(igAcc)) {
+        alert("Invalid Instagram Account Link");
+        return;
+      }
+
+      if (/\s/.test(linkTail)) {
+        alert("Link Tail cannot contain spaces");
+        return;
+      }
+
+      if (textName.length >= 18) {
+        alert("Display Name must be less than 18 characters");
+        return;
+      }
+
       // @ts-ignore
       window.showLoading?.();
 
