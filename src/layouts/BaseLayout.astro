@@ -18,10 +18,9 @@ const { title = "Reelink" } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
     <style>
-      /* Hide body content until JS hides the loader */
       body {
         opacity: 0;
-        transition: opacity 0.3s ease-in;
+        transition: opacity 0.1s ease-in;
       }
       body.loaded {
         opacity: 1;

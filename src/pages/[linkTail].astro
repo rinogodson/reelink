@@ -3,6 +3,7 @@ import { db } from "../lib/auth";
 import { user } from "../db/schema";
 import { eq } from "drizzle-orm";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import reelink from "../assets/REELINK.svg";
 
 const { linkTail } = Astro.params;
 
@@ -22,114 +23,249 @@ if (!profile) {
 }
 
 const userLinks = profile.links || [];
+let displayName = profile.textName || profile.name;
+displayName = displayName.toUpperCase();
 ---
 
-<BaseLayout>
-  <div>
+<BaseLayout title={`${displayName}'s Reelink`}>
+  <div id="bg-container" class="w-screen">
     <div
-      class="h-20 w-20 shrink-0 relative border-2 border-white/20 rounded-full overflow-hidden"
+      class="max-w-xl mx-auto min-h-screen flex flex-col justify-center items-center py-12 px-6 text-white font-[Funnel_Display]"
     >
-      {
-        profile.image ? (
-          <>
-            <img
-              src={profile.image}
-              alt={profile.textName}
-              onerror="this.style.display='none'"
-              class="h-full w-full rounded-full border border-white/20 object-cover absolute inset-0 z-10"
-            />
-            <div class="h-full w-full rounded-full bg-zinc-800 flex items-center justify-center border border-white/20">
-              <span class="text-xl font-bold">
-                {profile.textName?.charAt(0).toUpperCase()}
-              </span>
-            </div>
-          </>
-        ) : (
-          <div class="h-full w-full rounded-full bg-zinc-800 flex items-center justify-center border border-white/20">
-            <span class="text-xl font-bold">{name.charat(0)}</span>
+      <div
+        class="flex w-full justify-center saturate-0 opacity-30 absolute top-10 items-center mb-12"
+      >
+        <img src={reelink.src} alt="logo" class="h-8" />
+      </div>
+
+      <div class="flex flex-col gap-8 items-center text-center mb-12">
+        <div
+          class="shadow-[0px_2px_2px_rgba(0,0,0,0.25),inset_0px_2px_2px_rgba(255,255,255,0.1)] rounded-full"
+        >
+          <div
+            class="h-50 aspect-square shrink-0 relative border-10 border-white/8 rounded-full overflow-hidden shadow-[0px_2px_2px_rgba(0,0,0,0.25),inset_0px_2px_2px_rgba(255,255,255,0.1)]"
+          >
+            {
+              profile.image ? (
+                <>
+                  <img
+                    src={profile.image}
+                    alt="Profile"
+                    onerror="this.style.display='none'"
+                    class="h-full w-full rounded-full border border-white/20 object-cover absolute inset-0 z-10"
+                  />
+                  <div class="w-full aspect-square rounded-full bg-zinc-800 flex items-center justify-center">
+                    <span class="text-7xl font-bold">
+                      {profile.name.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <div class="h-full w-full rounded-full bg-zinc-800 flex items-center justify-center">
+                  <span class="text-7xl font-bold">
+                    {profile.name.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+              )
+            }
           </div>
-        )
-      }
-    </div>
-    <h1>
-      {profile.textName}
-    </h1>
-  </div>
+        </div>
+        <h1 class="text-4xl font-[Jaro] font-bold text-[#E9E9E9]">
+          {displayName}
+        </h1>
+      </div>
 
-  <div>
-    <input
-      id="paste-bar"
-      type="text"
-      inputmode="none"
-      placeholder="Paste Reel link here"
-    />
-  </div>
+      <div class="w-full max-w-md flex flex-col items-center gap-8 relative">
+        <input
+          id="paste-bar"
+          type="text"
+          inputmode="none"
+          class="py-10 font-[Inter] focus:outline-none text-center text-3xl caret-transparent w-full h-16 px-6 bg-linear-to-b from-[rgba(217,217,217,0.15)] to-[rgba(115,115,115,0.15)] border-[rgba(255,255,255,0.1)] rounded-[22px] shadow-[0_2px_2px_rgba(0,0,0,0.25),inset_0_2px_2px_rgba(255,255,255,0.25)] box-border"
+          placeholder="HOLD and PASTE"
+        />
 
-  <script define:vars={{ userLinks }}>
-    const pasteBar = document.getElementById("paste-bar");
+        <a
+          href={profile.igAcc || "#"}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <button
+            id="follow-btn"
+            class="follow-btn font-[Rubik] text-white rounded-full inline-flex font-medium sm:text-2xl text-lg items-center justify-center px-6 py-2 transition-all duration-300 border hover:brightness-105 active:brightness-90 focus:outline-none shadow-[0_5px_28.3px_rgba(0,0,0,0.2),inset_0_3px_3px_rgba(255,255,255,0.5)] box-border text-shadow-[0_1px_2px_rgba(0,0,0,0.5)]"
+          >
+            <span id="follow-btn-text">FOLLOW for more</span>
+          </button>
+        </a>
+      </div>
 
-    if (pasteBar) {
-      const handlePasteData = (pastedValue) => {
-        pastedValue = pastedValue.trim();
-        if (!pastedValue) return;
-
-        const match = userLinks.find(
-          (link) =>
-            link.reelURL.trim() === pastedValue ||
-            link.reelURL.trim().split("?")[0] === pastedValue.split("?")[0],
-        );
-
-        if (match) {
-          pasteBar.value = pastedValue;
-          pasteBar.classList.add("success");
-          setTimeout(() => {
-            const dest = match.destURL;
-            pasteBar.value = "";
-            pasteBar.classList.remove("success");
-            window.location.href = dest;
-          }, 600);
-        } else {
-          pasteBar.value = pastedValue;
-          pasteBar.classList.add("error");
-          setTimeout(() => {
-            pasteBar.value = "";
-            pasteBar.classList.remove("error");
-          }, 600);
+      <style>
+        #bg-container {
+          background-color: #0c0f14;
+          background-image: linear-gradient(
+            180deg,
+            rgba(11, 11, 11, 0) 0%,
+            #0b0b0b 100%
+          );
+          transition: background-color 0.3s ease-in-out;
         }
-      };
+        #bg-container.success {
+          background-color: #0d160b !important;
+        }
+        #bg-container.error {
+          background-color: #140303 !important;
+        }
+        .follow-btn {
+          background: linear-gradient(180deg, #009cff 0%, #0061f5 100%);
+          border-color: #004dc4;
+          min-width: 200px;
+        }
+        .follow-btn.success {
+          background: linear-gradient(
+            180deg,
+            #16ba00 0%,
+            #0e7a00 100%
+          ) !important;
+          border-color: #0b5e00 !important;
+          min-width: 300px;
+        }
+        .follow-btn.error {
+          background: linear-gradient(
+            180deg,
+            #ff4b4b 0%,
+            #c40000 100%
+          ) !important;
+          border-color: #900000 !important;
+          min-width: 280px;
+        }
+        #paste-bar.success {
+          border-color: #22c55e !important;
+          background: linear-gradient(
+            180deg,
+            rgba(34, 197, 94, 0.2) 0%,
+            rgba(21, 128, 61, 0.2) 100%
+          ) !important;
+        }
+        #paste-bar.error {
+          border-color: #ef4444 !important;
+          background: linear-gradient(
+            180deg,
+            rgba(239, 68, 68, 0.2) 0%,
+            rgba(185, 28, 28, 0.2) 100%
+          ) !important;
+        }
+      </style>
 
-      // Global paste listener
-      document.addEventListener("paste", (e) => {
-        e.preventDefault();
-        const pastedValue = e.clipboardData.getData("text");
-        handlePasteData(pastedValue);
-      });
+      <script define:vars={{ userLinks }}>
+        const bgContainer = document.getElementById("bg-container");
+        const pasteBar = document.getElementById("paste-bar");
+        const followBtn = document.getElementById("follow-btn");
+        const followBtnText = document.getElementById("follow-btn-text");
+        const originalBtnText = followBtnText
+          ? followBtnText.textContent
+          : "FOLLOW for more";
 
-      // Handle keyboard: focus on paste shortcut, and prevent typing
-      document.addEventListener("keydown", (e) => {
-        const isPasteShortcut =
-          (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "v";
+        window.addEventListener("load", () => {
+          document.body.classList.add("loaded");
+          window.hideLoading?.();
+        });
 
-        // Focus paste bar on shortcut if not focused
-        if (isPasteShortcut && document.activeElement !== pasteBar) {
-          pasteBar.focus();
+        if (document.readyState === "complete") {
+          document.body.classList.add("loaded");
+          window.hideLoading?.();
         }
 
-        // If focused on paste bar, prevent typing but allow shortcuts and navigation
-        if (document.activeElement === pasteBar) {
-          const isFunctionalKey =
-            e.key.length > 1 || e.metaKey || e.ctrlKey || e.altKey;
-          if (!isFunctionalKey && !isPasteShortcut) {
+        if (pasteBar) {
+          const handlePasteData = (pastedValue) => {
+            pastedValue = pastedValue.trim();
+            if (!pastedValue) return;
+
+            const match = userLinks.find(
+              (link) =>
+                link.reelURL.trim() === pastedValue ||
+                link.reelURL.trim().split("?")[0] === pastedValue.split("?")[0],
+            );
+
+            if (match) {
+              pasteBar.value = "Matched!";
+              pasteBar.classList.add("success");
+
+              if (bgContainer) {
+                bgContainer.classList.add("success");
+              }
+
+              if (followBtn && followBtnText) {
+                followBtn.classList.add("success");
+                followBtnText.textContent = "LINK FOUND! Redirecting...";
+              }
+
+              setTimeout(() => {
+                window.location.href = match.destURL;
+              }, 800);
+            } else {
+              pasteBar.value = "No match found";
+              pasteBar.classList.add("error");
+
+              if (bgContainer) {
+                bgContainer.classList.add("error");
+              }
+
+              if (followBtn && followBtnText) {
+                followBtn.classList.add("error");
+                followBtnText.textContent = "LINK NOT FOUND, try again!";
+              }
+
+              setTimeout(() => {
+                pasteBar.value = "";
+                pasteBar.classList.remove("error");
+
+                if (bgContainer) {
+                  bgContainer.classList.remove("error");
+                }
+
+                if (followBtn && followBtnText) {
+                  followBtn.classList.remove("error");
+                  followBtnText.textContent = originalBtnText;
+                }
+              }, 2000);
+            }
+          };
+
+          document.addEventListener("paste", (e) => {
             e.preventDefault();
-          }
-        }
-      });
+            const pastedValue = e.clipboardData.getData("text");
+            handlePasteData(pastedValue);
+          });
 
-      // Clear input on page show (handles back button)
-      window.addEventListener("pageshow", (event) => {
-        pasteBar.value = "";
-        pasteBar.classList.remove("success", "error");
-      });
-    }
-  </script>
+          document.addEventListener("keydown", (e) => {
+            const isPasteShortcut =
+              (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "v";
+
+            if (isPasteShortcut && document.activeElement !== pasteBar) {
+              pasteBar.focus();
+            }
+
+            if (document.activeElement === pasteBar) {
+              const isFunctionalKey =
+                e.key.length > 1 || e.metaKey || e.ctrlKey || e.altKey;
+              if (!isFunctionalKey && !isPasteShortcut) {
+                e.preventDefault();
+              }
+            }
+          });
+
+          window.addEventListener("pageshow", () => {
+            pasteBar.value = "";
+            pasteBar.classList.remove("success", "error");
+            if (bgContainer) {
+              bgContainer.classList.remove("success", "error");
+            }
+            if (followBtn && followBtnText) {
+              followBtn.classList.remove("success", "error");
+              followBtnText.textContent = originalBtnText;
+            }
+          });
+        }
+      </script>
+    </div>
+  </div>
 </BaseLayout>
