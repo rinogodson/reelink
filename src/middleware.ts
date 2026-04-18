@@ -1,5 +1,5 @@
 import { defineMiddleware } from "astro:middleware";
-import { auth } from "./lib/auth";
+import { getAuth } from "./lib/auth";
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const { pathname } = context.url;
@@ -22,6 +22,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
   if (!isSystemPath || isAuthPage) {
     return next();
   }
+
+  // @ts-ignore
+  const env = context.locals.runtime?.env || import.meta.env;
+  const auth = getAuth(env);
 
   const session = await auth.api.getSession({
     headers: context.request.headers,
