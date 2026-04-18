@@ -8,7 +8,7 @@ import reelink from "../assets/reelink.svg";
 
 import Button from "../components/Button.astro";
 
-const env = (Astro.locals as any).runtime?.env || import.meta.env;
+const env = Astro.locals.runtime?.env || process.env || import.meta.env;
 const auth = getAuth(env);
 const db = getDB(env);
 

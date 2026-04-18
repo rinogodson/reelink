@@ -7,7 +7,7 @@ import BackButton from "../../components/BackButton.astro";
 import Button from "../../components/Button.astro";
 import Input from "../../components/Input.astro";
 
-const env = (Astro.locals as any).runtime?.env || import.meta.env;
+const env = Astro.locals.runtime?.env || process.env || import.meta.env;
 const auth = getAuth(env);
 const db = getDB(env);
 

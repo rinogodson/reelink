@@ -8,10 +8,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return next();
   }
 
-  // @ts-ignore
-  const runtime = context.locals.runtime;
-  const env = runtime?.env || process.env || import.meta.env;
-
+  const env = context.locals.runtime?.env || process.env || import.meta.env;
   const auth = getAuth(env);
 
   const isAuthPage = pathname.startsWith("/api/auth");

@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import reelink from "../assets/reelink.svg";
 
-const env = (Astro.locals as any).runtime?.env || import.meta.env;
+const env = Astro.locals.runtime?.env || process.env || import.meta.env;
 const db = getDB(env);
 
 const { linkTail } = Astro.params;

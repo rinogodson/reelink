@@ -4,7 +4,7 @@ import { user } from "../../../db/schema";
 import { eq } from "drizzle-orm";
 
 export const POST: APIRoute = async (context) => {
-  const env = (context.locals as any).runtime?.env || import.meta.env;
+  const env = context.locals.runtime?.env || process.env || import.meta.env;
   const auth = getAuth(env);
   const db = getDB(env);
 

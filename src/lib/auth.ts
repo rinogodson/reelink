@@ -4,6 +4,11 @@ import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import * as schema from "../db/schema";
 
+export function getDB(env: any) {
+  const sql = neon(env.DATABASE_URL);
+  return drizzle(sql, { schema });
+}
+
 export function getAuth(env: any) {
   // Cloudflare v6 environment variables
   const sql = neon(env.DATABASE_URL);

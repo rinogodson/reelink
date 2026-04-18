@@ -3,7 +3,7 @@ import { getDB, getAuth } from "../../../lib/auth";
 import { links } from "../../../db/schema";
 
 export const POST: APIRoute = async (context) => {
-  const env = (context.locals as any).runtime?.env || import.meta.env;
+  const env = context.locals.runtime?.env || process.env || import.meta.env;
   const auth = getAuth(env);
   const db = getDB(env);
 
