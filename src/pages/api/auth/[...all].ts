@@ -3,7 +3,9 @@ import { getAuth } from "../../../lib/auth";
 
 export const ALL: APIRoute = (context) => {
   // @ts-ignore
-  const env = context.locals.runtime?.env || import.meta.env;
+  const runtime = context.locals.runtime;
+  const env = runtime?.env || process.env || import.meta.env;
+
   const auth = getAuth(env);
   return auth.handler(context.request);
 };

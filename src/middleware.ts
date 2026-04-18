@@ -8,6 +8,12 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return next();
   }
 
+  // @ts-ignore
+  const runtime = context.locals.runtime;
+  const env = runtime?.env || process.env || import.meta.env;
+
+  const auth = getAuth(env);
+
   const isAuthPage = pathname.startsWith("/api/auth");
   const isOnboarding = pathname.startsWith("/onboarding");
   const isDashboard = pathname.startsWith("/dashboard");
@@ -22,10 +28,6 @@ export const onRequest = defineMiddleware(async (context, next) => {
   if (!isSystemPath || isAuthPage) {
     return next();
   }
-
-  // @ts-ignore
-  const env = context.locals.runtime?.env || import.meta.env;
-  const auth = getAuth(env);
 
   const session = await auth.api.getSession({
     headers: context.request.headers,
