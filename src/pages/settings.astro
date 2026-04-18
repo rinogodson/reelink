@@ -1,9 +1,12 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { auth } from "../lib/auth";
+import { getAuth } from "../lib/auth";
 import Input from "../components/Input.astro";
 import Button from "../components/Button.astro";
 import BackButton from "../components/BackButton.astro";
+
+const env = (Astro.locals as any).runtime?.env || import.meta.env;
+const auth = getAuth(env);
 
 const session = await auth.api.getSession({ headers: Astro.request.headers });
 if (!session) {
@@ -142,7 +145,8 @@ const user = session.user;
           return;
         }
 
-        const igRegex = /^https:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9._]+\/?(\?.*)?$/;
+        const igRegex =
+          /^https:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9._]+\/?(\?.*)?$/;
         if (!igRegex.test(igAcc)) {
           alert("Invalid Instagram Account Link");
           return;

@@ -1,12 +1,17 @@
 import type { APIRoute } from "astro";
-import { db, auth } from "../../../lib/auth";
+import { getDB, getAuth } from "../../../lib/auth";
 import { links } from "../../../db/schema";
 
-export const POST: APIRoute = async (ctx) => {
-  const session = await auth.api.getSession({ headers: ctx.request.headers });
+export const POST: APIRoute = async (context) => {
+  const env = (context.locals as any).runtime?.env || import.meta.env;
+  const auth = getAuth(env);
+  const db = getDB(env);
+
+  const session = await auth.api.getSession({ headers: context.request.headers });
   if (!session) return new Response("Unauthorized", { status: 401 });
 
-  const { name, reelURL, destURL } = await ctx.request.json();
+  const { name, reelURL, destURL } = await context.request.json();
+
 
   if (!name || !reelURL || !destURL) {
     return new Response("Missing fields", { status: 400 });

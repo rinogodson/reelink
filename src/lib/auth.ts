@@ -4,10 +4,13 @@ import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import * as schema from "../db/schema";
 
-// Wrap in a function to dynamically catch Cloudflare's secure env variables
-export function getAuth(env: any) {
+export function getDB(env: any) {
   const sql = neon(env.DATABASE_URL);
-  const db = drizzle(sql, { schema });
+  return drizzle(sql, { schema });
+}
+
+export function getAuth(env: any) {
+  const db = getDB(env);
 
   return betterAuth({
     baseURL: env.BETTER_AUTH_URL,

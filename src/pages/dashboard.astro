@@ -1,5 +1,5 @@
 ---
-import { db, auth } from "../lib/auth";
+import { getDB, getAuth } from "../lib/auth";
 import { links } from "../db/schema";
 import { eq, desc } from "drizzle-orm";
 import BaseLayout from "../layouts/BaseLayout.astro";
@@ -7,6 +7,10 @@ import UserHeader from "../components/UserHeader.astro";
 import reelink from "../assets/reelink.svg";
 
 import Button from "../components/Button.astro";
+
+const env = (Astro.locals as any).runtime?.env || import.meta.env;
+const auth = getAuth(env);
+const db = getDB(env);
 
 const session = await auth.api.getSession({ headers: Astro.request.headers });
 if (!session) {

@@ -1,11 +1,15 @@
 ---
-import { db, auth } from "../../lib/auth";
+import { getDB, getAuth } from "../../lib/auth";
 import { links } from "../../db/schema";
 import { eq, and } from "drizzle-orm";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import BackButton from "../../components/BackButton.astro";
 import Button from "../../components/Button.astro";
 import Input from "../../components/Input.astro";
+
+const env = (Astro.locals as any).runtime?.env || import.meta.env;
+const auth = getAuth(env);
+const db = getDB(env);
 
 const { id } = Astro.params;
 

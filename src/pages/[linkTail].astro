@@ -1,9 +1,12 @@
 ---
-import { db } from "../lib/auth";
+import { getDB } from "../lib/auth";
 import { user } from "../db/schema";
 import { eq } from "drizzle-orm";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import reelink from "../assets/reelink.svg";
+
+const env = (Astro.locals as any).runtime?.env || import.meta.env;
+const db = getDB(env);
 
 const { linkTail } = Astro.params;
 

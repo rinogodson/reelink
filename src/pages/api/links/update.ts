@@ -1,13 +1,17 @@
 import type { APIRoute } from "astro";
-import { db, auth } from "../../../lib/auth";
+import { getDB, getAuth } from "../../../lib/auth";
 import { links } from "../../../db/schema";
 import { eq, and } from "drizzle-orm";
 
-export const PUT: APIRoute = async (ctx) => {
-  const session = await auth.api.getSession({ headers: ctx.request.headers });
+export const PUT: APIRoute = async (context) => {
+  const env = (context.locals as any).runtime?.env || import.meta.env;
+  const auth = getAuth(env);
+  const db = getDB(env);
+
+  const session = await auth.api.getSession({ headers: context.request.headers });
   if (!session) return new Response("Unauthorized", { status: 401 });
 
-  const { id, reelURL, destURL } = await ctx.request.json();
+  const { id, reelURL, destURL } = await context.request.json();
 
   if (!id || !reelURL || !destURL) {
     return new Response("Missing fields", { status: 400 });
