@@ -46,7 +46,7 @@ const timeStr = createdDate.toLocaleTimeString("en-US", {
 ---
 
 <BaseLayout title={`${link.name} | Reelink`}>
-  <div class="max-w-150 mx-auto p-6 font-sans flex flex-col min-h-screen">
+  <div class="max-w-150 mx-auto p-6 font-sans flex flex-col min-h-svh">
     <div class="h-[30%] w-full max-w-sm justify-center flex flex-col gap-4">
       <BackButton href="/dashboard" label="Dashboard" />
     </div>
@@ -135,7 +135,8 @@ const timeStr = createdDate.toLocaleTimeString("en-US", {
           return;
         }
 
-        const reelRegex = /^https:\/\/(www\.)?instagram\.com\/reel\/[a-zA-Z0-9._-]+\/?(\?.*)?$/;
+        const reelRegex =
+          /^https:\/\/(www\.)?instagram\.com\/reel\/[a-zA-Z0-9._-]+\/?(\?.*)?$/;
         if (!reelRegex.test(reelURL)) {
           alert("Invalid Instagram Reel Link");
           return;

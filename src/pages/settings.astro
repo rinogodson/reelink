@@ -5,6 +5,7 @@ import { getAuth } from "../lib/auth";
 import Input from "../components/Input.astro";
 import Button from "../components/Button.astro";
 import BackButton from "../components/BackButton.astro";
+import copy from "../assets/copy.svg";
 
 const auth = getAuth(env);
 
@@ -21,16 +22,15 @@ const user = session.user;
     class="text-[#E9E9E9] min-h-screen font-[Inter] items-center flex flex-col gap-4 pb-20 px-4"
   >
     <div
-      class="h-[30%] w-full max-w-sm justify-center flex flex-col gap-4 mt-10"
+      class="h-[30%] w-full max-w-md justify-center flex flex-col gap-4 mt-10"
     >
       <BackButton href="/dashboard" label="Dashboard" />
-      <h1 class="text-4xl font-medium">Account Settings</h1>
+      <h1 class="text-4xl font-medium w-full text-center">Settings</h1>
     </div>
 
     <div class="flex flex-col gap-6 mt-10 w-full md:w-[50%] items-center">
-      <!-- IG Account -->
-      <div class="w-full text-center max-w-sm gap-7 flex flex-col items-center">
-        <div class="w-full text-center max-w-sm flex flex-col">
+      <div class="w-full text-center max-w-md gap-7 flex flex-col items-center">
+        <div class="w-full text-center max-w-md flex flex-col">
           <label
             for="textName"
             class="font-[Rubik] text-xl opacity-50 mb-1 uppercase tracking-wider transition-all duration-200"
@@ -40,10 +40,15 @@ const user = session.user;
           <Input label="IG Acc Link" id="igAcc" value={user.igAcc || ""} />
         </div>
 
-        <!-- Display Name -->
         <div
-          class="flex text-center flex-col gap-3 relative w-full max-w-sm has-value"
+          class="flex text-center flex-col gap-3 relative w-full max-w-md has-value"
         >
+          <label
+            for="textName"
+            class="mt-5 font-[Rubik] text-xl opacity-50 mb-1 uppercase tracking-wider transition-all duration-200"
+          >
+            Display Name
+          </label>
           <label
             for="textName"
             id="label-textName"
@@ -58,19 +63,29 @@ const user = session.user;
           />
         </div>
 
-        <!-- Link Tail -->
         <div
-          class="flex text-center flex-col relative w-full max-w-sm has-value"
+          class="flex text-center flex-col relative w-full max-w-md has-value"
         >
+          <label
+            for="textName"
+            class="mt-5 font-[Rubik] text-xl opacity-50 mb-1 uppercase tracking-wider transition-all duration-200"
+          >
+            Bio LInk
+          </label>
           <label
             for="linkTail"
             id="label-linkTail"
             class="text-2xl font-semibold transition-all duration-200"
           >
-            <span>reelink.cc/</span><span
-              id="preview-tail"
-              class="text-blue-400">{user.linkTail || "link-tail"}</span
-            >
+            <div class="flex items-center justify-center gap-1 flex-col mt-4">
+              <div
+                id="copy-btn"
+                class="bg-white/10 px-6 font-[Rubik] rounded-full flex justify-center items-center gap-3 border border-white/20 py-3 w-fit text-2xl shadow-[0px_2px_29.1px_rgba(0,0,0,0.5),inset_0px_-2px_3px_rgba(0,0,0,0.25),inset_0px_3px_3px_rgba(255,255,255,0.1)] text-shadow-[0_1px_2px_rgba(0,0,0,0.5)] cursor-pointer"
+              >
+                <img src={copy.src} alt="Copy Icon" class="h-5 w-5" />
+                <div id="final-link">reelink.cc/{user.linkTail}</div>
+              </div>
+            </div>
           </label>
           <div class="mt-2">
             <Input
@@ -81,18 +96,24 @@ const user = session.user;
           </div>
         </div>
 
-        <Button
-          id="save-settings"
-          label="Save Changes"
-          classLI="mt-10 px-8 font-bold from-[#009CFF] to-[#0061F5] border-[#004DC4] rounded-full bg-linear-to-b text-white "
-        />
+        <div class="flex gap-4 justify-between w-full items-center">
+          <Button
+            id="logout"
+            label="Logout"
+            classLI="mt-10 px-8 font-bold from-[#D01114] to-[#880507] border-[#212121] rounded-full bg-linear-to-b text-white "
+          />
+          <Button
+            id="save-settings"
+            label="Save Changes"
+            classLI="mt-10 px-8 font-bold from-[#009CFF] to-[#0061F5] border-[#004DC4] rounded-full bg-linear-to-b text-white "
+          />
+        </div>
       </div>
     </div>
 
     <script>
       import { authClient } from "../lib/auth-client";
 
-      // Interactive Preview Logic
       const nameInput = document.getElementById("textName") as HTMLInputElement;
       const nameLabel = document.getElementById("label-textName");
       const nameWrapper = nameLabel?.parentElement;
@@ -109,16 +130,35 @@ const user = session.user;
       const tailPreview = document.getElementById("preview-tail");
       const tailWrapper =
         document.getElementById("label-linkTail")?.parentElement;
+      const finalLinkElem = document.getElementById("final-link");
 
       tailInput?.addEventListener("input", () => {
         const val = tailInput.value;
         if (tailPreview)
           tailPreview.textContent = val.length > 0 ? val : "link-tail";
+        if (finalLinkElem)
+          finalLinkElem.textContent =
+            val.length > 0 ? `reelink.cc/${val}` : "reelink.cc/";
         if (val.length > 0) tailWrapper?.classList.add("has-value");
         else tailWrapper?.classList.remove("has-value");
       });
 
-      // Save Logic
+      const copyBtn = document.getElementById("copy-btn");
+      copyBtn?.addEventListener("click", async () => {
+        if (finalLinkElem?.textContent) {
+          try {
+            await navigator.clipboard.writeText(finalLinkElem.textContent);
+            const originalHTML = copyBtn.innerHTML;
+            copyBtn.innerHTML = `<div class="text-center w-full">Copied!</div>`;
+            setTimeout(() => {
+              copyBtn.innerHTML = originalHTML;
+            }, 2000);
+          } catch (err) {
+            alert("Failed to copy.");
+          }
+        }
+      });
+
       const saveBtn = document.getElementById("save-settings");
 
       saveBtn?.addEventListener("click", async () => {
@@ -172,6 +212,20 @@ const user = session.user;
           // @ts-ignore
           window.hideLoading?.();
           alert("An unexpected error occurred.");
+        }
+      });
+
+      document.getElementById("logout")?.addEventListener("click", async () => {
+        // @ts-ignore
+        window.showLoading?.();
+        try {
+          await authClient.signOut();
+          window.location.href = "/";
+        } catch (err) {
+          console.error("Logout failed:", err);
+          // @ts-ignore
+          window.hideLoading?.();
+          alert("Failed to logout. Please try again.");
         }
       });
     </script>

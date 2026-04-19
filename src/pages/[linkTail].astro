@@ -99,7 +99,9 @@ const getHighResGoogleUrl = (url: string): string =>
       <div
         class="flex w-full justify-center saturate-0 opacity-30 absolute bottom-1 items-center mb-12"
       >
-        <img src={reelink.src} alt="logo" class="h-8" />
+        <a href="/" target="_blank" rel="noopener noreferrer">
+          <img src={reelink.src} alt="logo" class="h-8" />
+        </a>
       </div>
 
       <style>
@@ -203,7 +205,27 @@ const getHighResGoogleUrl = (url: string): string =>
               }
 
               setTimeout(() => {
-                window.location.href = match.destURL;
+                const isYouTube =
+                  match.destURL.includes("youtube.com") ||
+                  match.destURL.includes("youtu.be");
+
+                if (isYouTube) {
+                  try {
+                    const url = new URL(match.destURL);
+                    const videoId =
+                      url.searchParams.get("v") ||
+                      url.pathname.split("/").pop();
+                    window.location.href = `youtube://watch?v=${videoId}`;
+
+                    setTimeout(() => {
+                      window.location.href = match.destURL;
+                    }, 1000);
+                  } catch (e) {
+                    window.location.href = match.destURL;
+                  }
+                } else {
+                  window.location.href = match.destURL;
+                }
               }, 800);
             } else {
               pasteBar.value = "No match found";

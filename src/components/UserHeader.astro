@@ -5,10 +5,8 @@ interface Props {
   linkTail?: string | null;
 }
 
-import copyIcon from "../assets/copy.svg";
-
-const { name, image, linkTail } = Astro.props;
-const bioLink = linkTail ? `reelink.cc/${linkTail}` : "";
+const { name, image } = Astro.props;
+import gear from "../assets/gear.svg";
 ---
 
 <div class="flex items-center justify-between py-6 mb-8">
@@ -42,56 +40,20 @@ const bioLink = linkTail ? `reelink.cc/${linkTail}` : "";
       <h2 class="text-2xl font-bold text-[#E9E9E9]">{name}</h2>
       <div class="flex items-center justify-between w-full gap-4">
         <div class="flex items-center gap-2">
-          <button
-            id="copy-bio-link"
-            data-link={bioLink}
-            class="bg-[#D9D9D9]/22 hover:bg-white/10 rounded-full w-[7em] px-3 py-1 flex justify-center items-center font-[Rubik] transition-colors shadow-[0px_2px_29.1px_rgba(0,0,0,0.5),inset_0px_-2px_3px_rgba(0,0,0,0.25),inset_0px_1px_1px_rgba(255,255,255,0.2)] text-shadow-[0_1px_1px_rgba(0,0,0,0.2)]"
-          >
-            <img
-              src={copyIcon.src}
-              alt="Copy"
-              class="w-4 h-4 inline-block mr-1"
-            />
-            <span id="biolinktext">BIO LINK</span>
-          </button>
           <a href="/settings" title="Settings">
             <button
-              class="bg-[#D9D9D9]/22 hover:bg-white/10 rounded-full w-fit px-3 py-1 flex justify-center items-center font-[Rubik] transition-colors shadow-[0px_2px_29.1px_rgba(0,0,0,0.5),inset_0px_-2px_3px_rgba(0,0,0,0.25),inset_0px_1px_1px_rgba(255,255,255,0.2)] text-shadow-[0_1px_1px_rgba(0,0,0,0.2)]"
+              class="bg-[#D9D9D9]/22 hover:bg-white/10 rounded-full gap-1.5 w-fit px-3 py-1 flex justify-center items-center font-[Rubik] transition-colors shadow-[0px_2px_29.1px_rgba(0,0,0,0.5),inset_0px_-2px_3px_rgba(0,0,0,0.25),inset_0px_1px_1px_rgba(255,255,255,0.2)] text-shadow-[0_1px_1px_rgba(0,0,0,0.2)]"
             >
-              <span>EDIT</span>
+              <img
+                src={gear.src}
+                alt="Settings Icon"
+                class="h-5 aspect-square"
+              />
+              <span>SETTINGS</span>
             </button>
           </a>
         </div>
-        <button
-          id="logout"
-          class="px-3 py-1 h-full text-sm bg-red-600/60 hover:bg-red-700 text-white font-medium rounded-lg transition-colors shadow-[0px_2px_29.1px_rgba(0,0,0,0.5),inset_0px_-2px_3px_rgba(0,0,0,0.25),inset_0px_1px_1px_rgba(255,255,255,0.2)] text-shadow-[0_1px_1px_rgba(0,0,0,0.2)]"
-        >
-          Logout
-        </button>
       </div>
     </div>
   </div>
 </div>
-
-<script>
-  const copyBtn = document.getElementById("copy-bio-link");
-  const bioLinkText = document.getElementById("biolinktext");
-
-  copyBtn?.addEventListener("click", async () => {
-    const link = copyBtn.getAttribute("data-link");
-    if (link) {
-      try {
-        await navigator.clipboard.writeText(link);
-        if (bioLinkText) {
-          const originalText = bioLinkText.textContent;
-          bioLinkText.textContent = "COPIED";
-          setTimeout(() => {
-            bioLinkText.textContent = originalText;
-          }, 2000);
-        }
-      } catch (err) {
-        alert("Failed to copy.");
-      }
-    }
-  });
-</script>
