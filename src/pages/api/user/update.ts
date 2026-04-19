@@ -19,7 +19,8 @@ export const POST: APIRoute = async (context) => {
     return new Response("Missing fields", { status: 400 });
   }
 
-  const igRegex = /^(https?:\/\/)?(www\.)?instagram\.com\/[a-zA-Z0-9._]+\/?$/;
+  const igRegex =
+    /^https?:\/\/(www\.)?instagram\.com\/[A-Za-z0-9._]+(\/)?(\?igshid=[A-Za-z0-9]+)?$/;
   if (!igRegex.test(igAcc)) {
     return new Response("Invalid Instagram Account Link", { status: 400 });
   }
