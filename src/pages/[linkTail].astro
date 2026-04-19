@@ -37,12 +37,6 @@ const getHighResGoogleUrl = (url: string): string =>
     <div
       class="max-w-xl mx-auto min-h-screen flex flex-col justify-center items-center py-12 px-6 text-white font-[Funnel_Display]"
     >
-      <div
-        class="flex w-full justify-center saturate-0 opacity-30 absolute top-10 items-center mb-12"
-      >
-        <img src={reelink.src} alt="logo" class="h-8" />
-      </div>
-
       <div class="flex flex-col gap-8 items-center text-center mb-12">
         <div
           class="shadow-[0px_2px_2px_rgba(0,0,0,0.25),inset_0px_2px_2px_rgba(255,255,255,0.1)] rounded-full"
@@ -101,6 +95,11 @@ const getHighResGoogleUrl = (url: string): string =>
             <span id="follow-btn-text">FOLLOW for more</span>
           </button>
         </a>
+      </div>
+      <div
+        class="flex w-full justify-center saturate-0 opacity-30 absolute bottom-1 items-center mb-12"
+      >
+        <img src={reelink.src} alt="logo" class="h-8" />
       </div>
 
       <style>
