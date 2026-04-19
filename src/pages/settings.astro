@@ -92,19 +92,6 @@ const user = session.user;
     <script>
       import { authClient } from "../lib/auth-client";
 
-      // Handle page load
-      window.addEventListener("load", () => {
-        document.body.classList.add("loaded");
-        // @ts-ignore
-        window.hideLoading?.();
-      });
-
-      if (document.readyState === "complete") {
-        document.body.classList.add("loaded");
-        // @ts-ignore
-        window.hideLoading?.();
-      }
-
       // Interactive Preview Logic
       const nameInput = document.getElementById("textName") as HTMLInputElement;
       const nameLabel = document.getElementById("label-textName");

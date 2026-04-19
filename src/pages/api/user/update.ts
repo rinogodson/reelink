@@ -8,7 +8,9 @@ export const POST: APIRoute = async (context) => {
   const auth = getAuth(env);
   const db = getDB(env);
 
-  const session = await auth.api.getSession({ headers: context.request.headers });
+  const session = await auth.api.getSession({
+    headers: context.request.headers,
+  });
   if (!session) return new Response("Unauthorized", { status: 401 });
 
   const { textName, igAcc, linkTail } = await context.request.json();
@@ -17,7 +19,7 @@ export const POST: APIRoute = async (context) => {
     return new Response("Missing fields", { status: 400 });
   }
 
-  const igRegex = /^https:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9._]+\/?(\?.*)?$/;
+  const igRegex = /^(https?:\/\/)?(www\.)?instagram\.com\/[a-zA-Z0-9._]+\/?$/;
   if (!igRegex.test(igAcc)) {
     return new Response("Invalid Instagram Account Link", { status: 400 });
   }
@@ -27,7 +29,9 @@ export const POST: APIRoute = async (context) => {
   }
 
   if (textName.length >= 18) {
-    return new Response("Display Name must be less than 18 characters", { status: 400 });
+    return new Response("Display Name must be less than 18 characters", {
+      status: 400,
+    });
   }
 
   try {
@@ -36,9 +40,9 @@ export const POST: APIRoute = async (context) => {
       .set({ textName, igAcc, linkTail })
       .where(eq(user.id, session.user.id));
 
-    return new Response(JSON.stringify({ success: true }), { 
+    return new Response(JSON.stringify({ success: true }), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { "Content-Type": "application/json" },
     });
   } catch (err) {
     console.error("User update error:", err);

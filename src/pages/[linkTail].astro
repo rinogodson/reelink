@@ -28,6 +28,8 @@ if (!profile) {
 const userLinks = profile.links || [];
 let displayName = profile.textName || profile.name;
 displayName = displayName.toUpperCase();
+const getHighResGoogleUrl = (url: string): string =>
+  url.replace(/=s96-c$/, "=s400-c");
 ---
 
 <BaseLayout title={`${displayName}'s Reelink`}>
@@ -52,7 +54,7 @@ displayName = displayName.toUpperCase();
               profile.image ? (
                 <>
                   <img
-                    src={profile.image}
+                    src={getHighResGoogleUrl(profile.image)}
                     alt="Profile"
                     onerror="this.style.display='none'"
                     class="h-full w-full rounded-full border border-white/20 object-cover absolute inset-0 z-10"

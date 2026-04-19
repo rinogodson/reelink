@@ -6,6 +6,7 @@ import * as schema from "../db/schema";
 
 export function getDB(env: any) {
   const sql = neon(env.DATABASE_URL);
+
   return drizzle(sql, { schema });
 }
 
@@ -16,6 +17,7 @@ export function getAuth(env: any) {
 
   return betterAuth({
     baseURL: env.BETTER_AUTH_URL,
+    trustedOrigins: ["http://localhost:4321"],
     secret: env.BETTER_AUTH_SECRET,
     database: drizzleAdapter(db, {
       provider: "pg",

@@ -57,19 +57,6 @@ import Button from "../../components/Button.astro";
   <script>
     import { authClient } from "../../lib/auth-client";
 
-    // Handle page load
-    window.addEventListener("load", () => {
-      document.body.classList.add("loaded");
-      // @ts-ignore
-      window.hideLoading?.();
-    });
-
-    if (document.readyState === "complete") {
-      document.body.classList.add("loaded");
-      // @ts-ignore
-      window.hideLoading?.();
-    }
-
     document
       .getElementById("createBtn")
       ?.addEventListener("click", async () => {

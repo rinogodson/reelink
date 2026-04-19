@@ -114,16 +114,6 @@ const timeStr = createdDate.toLocaleTimeString("en-US", {
   </div>
 
   <script>
-    window.addEventListener("load", () => {
-      document.body.classList.add("loaded");
-      (window as any).hideLoading?.();
-    });
-
-    if (document.readyState === "complete") {
-      document.body.classList.add("loaded");
-      (window as any).hideLoading?.();
-    }
-
     const editBtn = document.getElementById("editBtn");
     const deleteBtn = document.getElementById("deleteBtn");
     const reelInput = document.getElementById("reelURL") as HTMLInputElement;

@@ -137,20 +137,6 @@ const audienceSteps = [
 <script>
   import { authClient } from "../lib/auth-client";
 
-  // Handle page load
-  window.addEventListener("load", () => {
-    document.body.classList.add("loaded");
-    // @ts-ignore
-    window.hideLoading?.();
-  });
-
-  // Just in case load event already fired
-  if (document.readyState === "complete") {
-    document.body.classList.add("loaded");
-    // @ts-ignore
-    window.hideLoading?.();
-  }
-
   document.getElementById("login")?.addEventListener("click", async () => {
     // @ts-ignore
     window.showLoading?.();

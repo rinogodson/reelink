@@ -116,6 +116,25 @@
     }
   };
 
+  const handleHide = () => {
+    document.body.classList.add("loaded");
+    window.hideLoading();
+  };
+
+  // Handle page load
+  if (document.readyState === "complete") {
+    handleHide();
+  } else {
+    window.addEventListener("load", handleHide);
+  }
+
+  // Handle back/forward from cache (bfcache)
+  window.addEventListener("pageshow", (event) => {
+    if (event.persisted) {
+      handleHide();
+    }
+  });
+
   // Intercept internal links to show loader between pages
   document.addEventListener("click", (e) => {
     const link = e.target.closest("a");
