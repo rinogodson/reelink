@@ -20,7 +20,7 @@ export const POST: APIRoute = async (context) => {
   }
 
   const igRegex =
-    /^https?:\/\/(www\.)?instagram\.com\/[A-Za-z0-9._]+(\/)?(\?igshid=[A-Za-z0-9]+)?$/;
+    /^https?:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9._]+(\/)?(\?.*)?$/;
   if (!igRegex.test(igAcc)) {
     return new Response("Invalid Instagram Account Link", { status: 400 });
   }
