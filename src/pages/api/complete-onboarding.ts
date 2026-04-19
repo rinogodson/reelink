@@ -1,10 +1,10 @@
+import { env } from "cloudflare:workers";
 import type { APIRoute } from "astro";
 import { getDB, getAuth } from "../../lib/auth";
 import { user } from "../../db/schema";
 import { eq } from "drizzle-orm";
 
 export const POST: APIRoute = async (context) => {
-  const env = context.locals.runtime?.env || process.env || import.meta.env;
   const auth = getAuth(env);
   const db = getDB(env);
 

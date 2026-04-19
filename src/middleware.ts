@@ -1,4 +1,5 @@
 import { defineMiddleware } from "astro:middleware";
+import { env } from "cloudflare:workers";
 import { getAuth } from "./lib/auth";
 
 export const onRequest = defineMiddleware(async (context, next) => {
@@ -8,7 +9,6 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return next();
   }
 
-  const env = context.locals.runtime?.env || process.env || import.meta.env;
   const auth = getAuth(env);
 
   const isAuthPage = pathname.startsWith("/api/auth");
