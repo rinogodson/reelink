@@ -7,50 +7,52 @@ import Button from "../../components/Button.astro";
 ---
 
 <BaseLayout title="Create Link | Reelink">
-  <div
-    style="max-width: 500px; height: 100vh; font-family: sans-serif; color: white; padding: 0 20px;"
-    class="mt-5"
-  >
-    <BackButton href="/dashboard" label="Dashboard" />
+  <div class="w-full h-screen flex justify-center">
     <div
-      class="w-full h-[20%] flex justify-center md:justify-start md:mb-15 md:mt-0 mb-5 mt-10"
+      style=" font-family: sans-serif; color: white; padding: 0 20px;"
+      class="w-full md:max-w-2xl mt-5 justify-center"
     >
-      <img src={reelink.src} alt="logo" class="md:w-60 w-45" />
-    </div>
-
-    <div
-      style="display: flex; align-items: center; flex-direction: column; gap: 1rem; margin-top: 20px;"
-    >
-      <div class="w-full text-center max-w-sm gap-3 flex flex-col">
-        <label
-          class="font-[Rubik] text-xl opacity-50 uppercase tracking-wider transition-all duration-200"
-        >
-          Link NAME
-        </label>
-        <Input label="Link Name" id="name" />
-      </div>
-      <div class="w-full text-center max-w-sm gap-3 flex flex-col">
-        <label
-          class="font-[Rubik] text-xl opacity-50 uppercase tracking-wider transition-all duration-200"
-        >
-          Reel's Link
-        </label>
-        <Input label="Enter Reel" id="reelURL" />
-      </div>
-      <div class="w-full text-center max-w-sm gap-3 flex flex-col">
-        <label
-          class="font-[Rubik] text-xl opacity-50 uppercase tracking-wider transition-all duration-200"
-        >
-          Destination Link
-        </label>
-        <Input label="Enter Destination" id="destURL" />
+      <BackButton href="/dashboard" label="Dashboard" />
+      <div
+        class="w-full h-[20%] flex justify-center md:mb-15 md:mt-0 mb-5 mt-10"
+      >
+        <img src={reelink.src} alt="logo" class="md:w-60 w-45" />
       </div>
 
-      <Button
-        id="createBtn"
-        label="Create Link"
-        classLI="mt-10 px-8 absolute bottom-30 font-bold from-[#009CFF] to-[#0061F5] border-[#004DC4] rounded-full bg-linear-to-b text-white "
-      />
+      <div
+        style="display: flex; align-items: center; flex-direction: column; gap: 1rem; margin-top: 20px;"
+      >
+        <div class="w-full text-center max-w-sm gap-3 flex flex-col">
+          <label
+            class="font-[Rubik] text-xl opacity-50 uppercase tracking-wider transition-all duration-200"
+          >
+            Link NAME
+          </label>
+          <Input label="Link Name" id="name" />
+        </div>
+        <div class="w-full text-center max-w-sm gap-3 flex flex-col">
+          <label
+            class="font-[Rubik] text-xl opacity-50 uppercase tracking-wider transition-all duration-200"
+          >
+            Reel's Link
+          </label>
+          <Input label="Enter Reel" id="reelURL" />
+        </div>
+        <div class="w-full text-center max-w-sm gap-3 flex flex-col">
+          <label
+            class="font-[Rubik] text-xl opacity-50 uppercase tracking-wider transition-all duration-200"
+          >
+            Destination Link
+          </label>
+          <Input label="Enter Destination" id="destURL" />
+        </div>
+
+        <Button
+          id="createBtn"
+          label="Create Link"
+          classLI="mt-10 px-8 absolute bottom-10 font-bold from-[#009CFF] to-[#0061F5] border-[#004DC4] rounded-full bg-linear-to-b text-white "
+        />
+      </div>
     </div>
   </div>
 
@@ -72,7 +74,8 @@ import Button from "../../components/Button.astro";
           return;
         }
 
-        const reelRegex = /^https:\/\/(www\.)?instagram\.com\/reel\/[a-zA-Z0-9._-]+\/?(\?.*)?$/;
+        const reelRegex =
+          /^https:\/\/(www\.)?instagram\.com\/reel\/[a-zA-Z0-9._-]+\/?(\?.*)?$/;
         if (!reelRegex.test(reelURL)) {
           alert("Invalid Instagram Reel Link");
           return;
