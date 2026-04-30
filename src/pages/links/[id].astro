@@ -64,21 +64,6 @@ const timeStr = createdDate.toLocaleTimeString("en-US", {
         <label
           class="font-[Rubik] text-xl opacity-50 uppercase tracking-wider transition-all duration-200"
         >
-          Terms (comma separated)
-        </label>
-        <Input
-          label="Terms"
-          value={link.terms.join(", ")}
-          id="terms"
-          readonly={true}
-        />
-      </div>
-      <div
-        class="w-full text-start text-[#ECECEC] max-w-sm gap-3 flex flex-col"
-      >
-        <label
-          class="font-[Rubik] text-xl opacity-50 uppercase tracking-wider transition-all duration-200"
-        >
           Destination Link
         </label>
         <Input
@@ -88,6 +73,27 @@ const timeStr = createdDate.toLocaleTimeString("en-US", {
           readonly={true}
         />
       </div>
+      <div
+        class="w-full text-start text-[#ECECEC] max-w-sm gap-3 flex flex-col"
+      >
+        <label
+          class="font-[Rubik] text-xl opacity-50 uppercase tracking-wider transition-all duration-200"
+        >
+          Terms
+        </label>
+        <div id="termInputContainer" class="relative w-full" style="display: none;">
+          <Input label="Add a term..." id="termInput" />
+          <button
+            id="addTermBtn"
+            class="absolute right-4 top-1/2 -translate-y-1/2 text-4xl text-white/50 hover:text-white md:hidden flex items-center justify-center h-full"
+            type="button"
+          >
+            +
+          </button>
+        </div>
+        <div id="termsList" class="flex flex-wrap gap-2 mt-2">
+        </div>
+      </div>
     </div>
 
     <div
@@ -96,6 +102,8 @@ const timeStr = createdDate.toLocaleTimeString("en-US", {
       <p>Created on: {dateStr}</p>
       <p>Time: {timeStr}</p>
     </div>
+
+    <div id="terms-data" data-terms={JSON.stringify(link.terms)}></div>
 
     <div class="mt-auto pt-16 pb-4 flex justify-between gap-4">
       <Button
@@ -116,30 +124,85 @@ const timeStr = createdDate.toLocaleTimeString("en-US", {
   <script>
     const editBtn = document.getElementById("editBtn");
     const deleteBtn = document.getElementById("deleteBtn");
-    const termsInput = document.getElementById("terms") as HTMLInputElement;
     const destInput = document.getElementById("destURL") as HTMLInputElement;
+    const termInput = document.getElementById("termInput") as HTMLInputElement;
+    const termInputContainer = document.getElementById("termInputContainer");
+    const termsList = document.getElementById("termsList");
+    const addTermBtn = document.getElementById("addTermBtn");
+    const termsData = document.getElementById("terms-data");
+    
+    let terms: string[] = JSON.parse(termsData?.dataset.terms || "[]");
+    let isEditing = false;
+
+    function renderTerms() {
+      if (!termsList) return;
+      termsList.innerHTML = "";
+      terms.forEach((term, index) => {
+        const chip = document.createElement("div");
+        chip.className = "flex items-center gap-2 px-3 py-1 bg-white/10 border border-white/10 rounded-full text-white max-w-[150px]";
+        
+        const text = document.createElement("span");
+        text.className = "truncate text-sm font-medium";
+        text.textContent = term;
+        chip.appendChild(text);
+
+        if (isEditing) {
+          const removeBtn = document.createElement("button");
+          removeBtn.innerHTML = "×";
+          removeBtn.className = "text-lg leading-none opacity-50 hover:opacity-100 focus:outline-none";
+          removeBtn.onclick = () => {
+            terms = terms.filter((_, i) => i !== index);
+            renderTerms();
+          };
+          chip.appendChild(removeBtn);
+        }
+        
+        termsList.appendChild(chip);
+      });
+    }
+
+    renderTerms();
+
+    function addTerm() {
+      const value = termInput.value.trim();
+      if (value && !terms.includes(value)) {
+        terms.push(value);
+        termInput.value = "";
+        renderTerms();
+      }
+    }
+
+    termInput?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addTerm();
+      }
+    });
+
+    addTermBtn?.addEventListener("click", (e) => {
+      e.preventDefault();
+      addTerm();
+    });
 
     editBtn?.addEventListener("click", async () => {
-      if (editBtn.textContent?.trim() === "Edit This") {
-        termsInput.removeAttribute("readonly");
+      if (!isEditing) {
+        isEditing = true;
         destInput.removeAttribute("readonly");
-        termsInput.focus();
+        if (termInputContainer) termInputContainer.style.display = "block";
+        destInput.focus();
         editBtn.textContent = "Save";
+        renderTerms();
       } else {
-        const termsValue = termsInput.value;
-        const destURL = destInput.value;
+        let destURL = destInput.value;
         const id = window.location.pathname.split("/").pop();
 
-        if (!termsValue || !destURL) {
-          alert("Please fill in all fields.");
+        if (terms.length === 0 || !destURL) {
+          alert("Please fill in all fields and add at least one term.");
           return;
         }
 
-        const terms = termsValue.split(',').map(t => t.trim()).filter(t => t.length > 0);
-
-        if (terms.length === 0) {
-          alert("Please enter at least one term.");
-          return;
+        if (!/^https?:\/\//i.test(destURL)) {
+          destURL = "https://" + destURL;
         }
 
         try {
@@ -159,9 +222,11 @@ const timeStr = createdDate.toLocaleTimeString("en-US", {
           });
 
           if (response.ok) {
-            termsInput.setAttribute("readonly", "true");
+            isEditing = false;
             destInput.setAttribute("readonly", "true");
+            if (termInputContainer) termInputContainer.style.display = "none";
             editBtn.textContent = "Edit This";
+            renderTerms();
           } else {
             const errorText = await response.text();
             alert(errorText || "Failed to update link.");

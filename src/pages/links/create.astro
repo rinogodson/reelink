@@ -34,17 +34,28 @@ import Button from "../../components/Button.astro";
           <label
             class="font-[Rubik] text-xl opacity-50 uppercase tracking-wider transition-all duration-200"
           >
-            Terms (comma separated)
+            Destination Link
           </label>
-          <Input label="e.g. term1, term2" id="terms" />
+          <Input label="Enter Destination" id="destURL" />
         </div>
         <div class="w-full text-center max-w-sm gap-3 flex flex-col">
           <label
             class="font-[Rubik] text-xl opacity-50 uppercase tracking-wider transition-all duration-200"
           >
-            Destination Link
+            Terms
           </label>
-          <Input label="Enter Destination" id="destURL" />
+          <div class="relative w-full">
+            <Input label="Add a term..." id="termInput" />
+            <button
+              id="addTermBtn"
+              class="absolute right-4 top-1/2 -translate-y-1/2 text-4xl text-white/50 hover:text-white md:hidden flex items-center justify-center h-full"
+              type="button"
+            >
+              +
+            </button>
+          </div>
+          <div id="termsList" class="flex flex-wrap gap-2 mt-2 justify-center">
+          </div>
         </div>
 
         <Button
@@ -59,26 +70,72 @@ import Button from "../../components/Button.astro";
   <script>
     import { authClient } from "../../lib/auth-client";
 
+    const termInput = document.getElementById("termInput") as HTMLInputElement;
+    const addTermBtn = document.getElementById("addTermBtn");
+    const termsList = document.getElementById("termsList");
+    let terms: string[] = [];
+
+    function renderTerms() {
+      if (!termsList) return;
+      termsList.innerHTML = "";
+      terms.forEach((term, index) => {
+        const chip = document.createElement("div");
+        chip.className = "flex font-[Rubik] items-center gap-2 px-3 py-1 bg-white/10 border border-white/10 rounded-full text-white max-w-[150px] shadow-[0px_2px_2px_rgba(0,0,0,0.40),inset_0px_1px_1px_rgba(255,255,255,0.10)]";
+        
+        const text = document.createElement("span");
+        text.className = "truncate text-sm font-medium";
+        text.textContent = term;
+        
+        const deleteBtn = document.createElement("button");
+        deleteBtn.innerHTML = "×";
+        deleteBtn.className = "text-lg leading-none opacity-50 hover:opacity-100 focus:outline-none";
+        deleteBtn.onclick = () => {
+          terms = terms.filter((_, i) => i !== index);
+          renderTerms();
+        };
+
+        chip.appendChild(text);
+        chip.appendChild(deleteBtn);
+        termsList.appendChild(chip);
+      });
+    }
+
+    function addTerm() {
+      const value = termInput.value.trim();
+      if (value && !terms.includes(value)) {
+        terms.push(value);
+        termInput.value = "";
+        renderTerms();
+      }
+    }
+
+    termInput?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addTerm();
+      }
+    });
+
+    addTermBtn?.addEventListener("click", (e) => {
+      e.preventDefault();
+      addTerm();
+    });
+
     document
       .getElementById("createBtn")
       ?.addEventListener("click", async () => {
         const name = (document.getElementById("name") as HTMLInputElement)
           .value;
-        const termsValue = (document.getElementById("terms") as HTMLInputElement)
-          .value;
-        const destURL = (document.getElementById("destURL") as HTMLInputElement)
+        let destURL = (document.getElementById("destURL") as HTMLInputElement)
           .value;
 
-        if (!name || !termsValue || !destURL) {
-          alert("Please fill in all fields.");
+        if (!name || terms.length === 0 || !destURL) {
+          alert("Please fill in all fields and add at least one term.");
           return;
         }
 
-        const terms = termsValue.split(',').map(t => t.trim()).filter(t => t.length > 0);
-
-        if (terms.length === 0) {
-          alert("Please enter at least one term.");
-          return;
+        if (!/^https?:\/\//i.test(destURL)) {
+          destURL = "https://" + destURL;
         }
 
         try {
