@@ -64,12 +64,12 @@ const timeStr = createdDate.toLocaleTimeString("en-US", {
         <label
           class="font-[Rubik] text-xl opacity-50 uppercase tracking-wider transition-all duration-200"
         >
-          REEL LINK
+          Terms (comma separated)
         </label>
         <Input
-          label="Reel Link"
-          value={link.reelURL}
-          id="reelURL"
+          label="Terms"
+          value={link.terms.join(", ")}
+          id="terms"
           readonly={true}
         />
       </div>
@@ -116,29 +116,29 @@ const timeStr = createdDate.toLocaleTimeString("en-US", {
   <script>
     const editBtn = document.getElementById("editBtn");
     const deleteBtn = document.getElementById("deleteBtn");
-    const reelInput = document.getElementById("reelURL") as HTMLInputElement;
+    const termsInput = document.getElementById("terms") as HTMLInputElement;
     const destInput = document.getElementById("destURL") as HTMLInputElement;
 
     editBtn?.addEventListener("click", async () => {
       if (editBtn.textContent?.trim() === "Edit This") {
-        reelInput.removeAttribute("readonly");
+        termsInput.removeAttribute("readonly");
         destInput.removeAttribute("readonly");
-        reelInput.focus();
+        termsInput.focus();
         editBtn.textContent = "Save";
       } else {
-        const reelURL = reelInput.value;
+        const termsValue = termsInput.value;
         const destURL = destInput.value;
         const id = window.location.pathname.split("/").pop();
 
-        if (!reelURL || !destURL) {
+        if (!termsValue || !destURL) {
           alert("Please fill in all fields.");
           return;
         }
 
-        const reelRegex =
-          /^https:\/\/(www\.)?instagram\.com\/reel\/[a-zA-Z0-9._-]+\/?(\?.*)?$/;
-        if (!reelRegex.test(reelURL)) {
-          alert("Invalid Instagram Reel Link");
+        const terms = termsValue.split(',').map(t => t.trim()).filter(t => t.length > 0);
+
+        if (terms.length === 0) {
+          alert("Please enter at least one term.");
           return;
         }
 
@@ -155,11 +155,11 @@ const timeStr = createdDate.toLocaleTimeString("en-US", {
           const response = await fetch("/api/links/update", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id, reelURL, destURL }),
+            body: JSON.stringify({ id, terms, destURL }),
           });
 
           if (response.ok) {
-            reelInput.setAttribute("readonly", "true");
+            termsInput.setAttribute("readonly", "true");
             destInput.setAttribute("readonly", "true");
             editBtn.textContent = "Edit This";
           } else {

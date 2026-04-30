@@ -25,7 +25,7 @@ export const links = pgTable("links", {
     .notNull()
     .references(() => user.id),
   name: text("name").notNull(),
-  reelURL: text("reelURL").notNull(),
+  terms: text("terms").array().notNull(),
   destURL: text("destURL").notNull(),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
 });

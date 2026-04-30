@@ -34,9 +34,9 @@ import Button from "../../components/Button.astro";
           <label
             class="font-[Rubik] text-xl opacity-50 uppercase tracking-wider transition-all duration-200"
           >
-            Reel's Link
+            Terms (comma separated)
           </label>
-          <Input label="Enter Reel" id="reelURL" />
+          <Input label="e.g. term1, term2" id="terms" />
         </div>
         <div class="w-full text-center max-w-sm gap-3 flex flex-col">
           <label
@@ -64,20 +64,20 @@ import Button from "../../components/Button.astro";
       ?.addEventListener("click", async () => {
         const name = (document.getElementById("name") as HTMLInputElement)
           .value;
-        const reelURL = (document.getElementById("reelURL") as HTMLInputElement)
+        const termsValue = (document.getElementById("terms") as HTMLInputElement)
           .value;
         const destURL = (document.getElementById("destURL") as HTMLInputElement)
           .value;
 
-        if (!name || !reelURL || !destURL) {
+        if (!name || !termsValue || !destURL) {
           alert("Please fill in all fields.");
           return;
         }
 
-        const reelRegex =
-          /^https:\/\/(www\.)?instagram\.com\/reel\/[a-zA-Z0-9._-]+\/?(\?.*)?$/;
-        if (!reelRegex.test(reelURL)) {
-          alert("Invalid Instagram Reel Link");
+        const terms = termsValue.split(',').map(t => t.trim()).filter(t => t.length > 0);
+
+        if (terms.length === 0) {
+          alert("Please enter at least one term.");
           return;
         }
 
@@ -95,7 +95,7 @@ import Button from "../../components/Button.astro";
           const response = await fetch("/api/links/create", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, reelURL, destURL }),
+            body: JSON.stringify({ name, terms, destURL }),
           });
 
           if (response.ok) {

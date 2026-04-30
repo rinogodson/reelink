@@ -10,16 +10,11 @@ export const POST: APIRoute = async (context) => {
   const session = await auth.api.getSession({ headers: context.request.headers });
   if (!session) return new Response("Unauthorized", { status: 401 });
 
-  const { name, reelURL, destURL } = await context.request.json();
+  const { name, terms, destURL } = await context.request.json();
 
 
-  if (!name || !reelURL || !destURL) {
+  if (!name || !terms || !destURL) {
     return new Response("Missing fields", { status: 400 });
-  }
-
-  const reelRegex = /^https:\/\/(www\.)?instagram\.com\/reel\/[a-zA-Z0-9._-]+\/?(\?.*)?$/;
-  if (!reelRegex.test(reelURL)) {
-    return new Response("Invalid Instagram Reel Link", { status: 400 });
   }
 
   try {
@@ -28,7 +23,6 @@ export const POST: APIRoute = async (context) => {
     return new Response("Invalid Destination URL", { status: 400 });
   }
 
-  // Generate a random ID for the link
   const linkID = Math.random().toString(36).substring(2, 10);
 
   try {
@@ -36,7 +30,7 @@ export const POST: APIRoute = async (context) => {
       id: linkID,
       userId: session.user.id,
       name,
-      reelURL,
+      terms,
       destURL,
     });
 

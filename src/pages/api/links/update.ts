@@ -11,15 +11,10 @@ export const PUT: APIRoute = async (context) => {
   const session = await auth.api.getSession({ headers: context.request.headers });
   if (!session) return new Response("Unauthorized", { status: 401 });
 
-  const { id, reelURL, destURL } = await context.request.json();
+  const { id, terms, destURL } = await context.request.json();
 
-  if (!id || !reelURL || !destURL) {
+  if (!id || !terms || !destURL) {
     return new Response("Missing fields", { status: 400 });
-  }
-
-  const reelRegex = /^https:\/\/(www\.)?instagram\.com\/reel\/[a-zA-Z0-9._-]+\/?(\?.*)?$/;
-  if (!reelRegex.test(reelURL)) {
-    return new Response("Invalid Instagram Reel Link", { status: 400 });
   }
 
   try {
@@ -31,7 +26,7 @@ export const PUT: APIRoute = async (context) => {
   try {
     const result = await db
       .update(links)
-      .set({ reelURL, destURL })
+      .set({ terms, destURL })
       .where(and(eq(links.id, id), eq(links.userId, session.user.id)));
 
     return new Response(JSON.stringify({ success: true }), { 

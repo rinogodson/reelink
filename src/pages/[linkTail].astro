@@ -76,25 +76,19 @@ const getHighResGoogleUrl = (url: string): string =>
 
       <div class="w-full max-w-md flex flex-col items-center gap-8 relative">
         <input
-          id="paste-bar"
+          autofocus
+          id="term-input"
           type="text"
-          inputmode="none"
-          class="py-10 font-[Inter] focus:outline-none text-center text-3xl caret-transparent w-full h-16 px-6 bg-linear-to-b from-[rgba(217,217,217,0.15)] to-[rgba(115,115,115,0.15)] border-[rgba(255,255,255,0.1)] rounded-[22px] shadow-[0_2px_2px_rgba(0,0,0,0.25),inset_0_2px_2px_rgba(255,255,255,0.25)] box-border"
-          placeholder="HOLD and PASTE"
+          class="py-10 font-[Inter] focus:outline-none text-center text-3xl w-full h-16 px-6 bg-linear-to-b from-[rgba(217,217,217,0.15)] to-[rgba(115,115,115,0.15)] border-[rgba(255,255,255,0.1)] rounded-[22px] shadow-[0_2px_2px_rgba(0,0,0,0.25),inset_0_2px_2px_rgba(255,255,255,0.25)] box-border"
+          placeholder="Type Here..."
         />
 
-        <a
-          href={profile.igAcc || "#"}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          id="give-me-btn"
+          class="follow-btn font-[Rubik] text-white rounded-full inline-flex font-medium sm:text-2xl text-2xl items-center justify-center px-6 py-2 transition-all duration-300 border hover:brightness-105 active:brightness-90 focus:outline-none shadow-[0_5px_28.3px_rgba(0,0,0,0.2),inset_0_3px_3px_rgba(255,255,255,0.5)] box-border text-shadow-[0_1px_2px_rgba(0,0,0,0.5)]"
         >
-          <button
-            id="follow-btn"
-            class="follow-btn font-[Rubik] text-white rounded-full inline-flex font-medium sm:text-2xl text-lg items-center justify-center px-6 py-2 transition-all duration-300 border hover:brightness-105 active:brightness-90 focus:outline-none shadow-[0_5px_28.3px_rgba(0,0,0,0.2),inset_0_3px_3px_rgba(255,255,255,0.5)] box-border text-shadow-[0_1px_2px_rgba(0,0,0,0.5)]"
-          >
-            <span id="follow-btn-text">FOLLOW for more</span>
-          </button>
-        </a>
+          <span id="btn-text">GIVE ME</span>
+        </button>
       </div>
       <div
         class="flex w-full justify-center saturate-0 opacity-30 absolute bottom-1 items-center mb-12"
@@ -143,7 +137,7 @@ const getHighResGoogleUrl = (url: string): string =>
           border-color: #900000 !important;
           min-width: 280px;
         }
-        #paste-bar.success {
+        #term-input.success {
           border-color: #22c55e !important;
           background: linear-gradient(
             180deg,
@@ -151,7 +145,7 @@ const getHighResGoogleUrl = (url: string): string =>
             rgba(21, 128, 61, 0.2) 100%
           ) !important;
         }
-        #paste-bar.error {
+        #term-input.error {
           border-color: #ef4444 !important;
           background: linear-gradient(
             180deg,
@@ -163,12 +157,10 @@ const getHighResGoogleUrl = (url: string): string =>
 
       <script define:vars={{ userLinks }}>
         const bgContainer = document.getElementById("bg-container");
-        const pasteBar = document.getElementById("paste-bar");
-        const followBtn = document.getElementById("follow-btn");
-        const followBtnText = document.getElementById("follow-btn-text");
-        const originalBtnText = followBtnText
-          ? followBtnText.textContent
-          : "FOLLOW for more";
+        const termInput = document.getElementById("term-input");
+        const giveMeBtn = document.getElementById("give-me-btn");
+        const btnText = document.getElementById("btn-text");
+        const originalBtnText = "GIVE ME";
 
         window.addEventListener("load", () => {
           document.body.classList.add("loaded");
@@ -180,112 +172,50 @@ const getHighResGoogleUrl = (url: string): string =>
           window.hideLoading?.();
         }
 
-        if (pasteBar) {
-          const handlePasteData = (pastedValue) => {
-            pastedValue = pastedValue.trim();
-            if (!pastedValue) return;
+        if (giveMeBtn && termInput) {
+          const handleSearch = () => {
+            const enteredTerm = termInput.value.trim().toLowerCase();
+            if (!enteredTerm) return;
 
-            const match = userLinks.find(
-              (link) =>
-                link.reelURL.trim() === pastedValue ||
-                link.reelURL.trim().split("?")[0] === pastedValue.split("?")[0],
+            const match = userLinks.find((link) =>
+              link.terms.some((term) => term.toLowerCase() === enteredTerm),
             );
 
             if (match) {
-              pasteBar.value = "Matched!";
-              pasteBar.classList.add("success");
-
-              if (bgContainer) {
-                bgContainer.classList.add("success");
-              }
-
-              if (followBtn && followBtnText) {
-                followBtn.classList.add("success");
-                followBtnText.textContent = "LINK FOUND! Redirecting...";
-              }
+              termInput.classList.add("success");
+              if (bgContainer) bgContainer.classList.add("success");
+              giveMeBtn.classList.add("success");
+              if (btnText) btnText.textContent = "LINK FOUND! Redirecting...";
 
               setTimeout(() => {
                 window.location.href = match.destURL;
               }, 800);
             } else {
-              pasteBar.value = "No match found";
-              pasteBar.classList.add("error");
-
-              if (bgContainer) {
-                bgContainer.classList.add("error");
-              }
-
-              if (followBtn && followBtnText) {
-                followBtn.classList.add("error");
-                followBtnText.textContent = "LINK NOT FOUND, try again!";
-              }
+              termInput.classList.add("error");
+              if (bgContainer) bgContainer.classList.add("error");
+              giveMeBtn.classList.add("error");
+              if (btnText) btnText.textContent = "NO MATCH FOUND";
 
               setTimeout(() => {
-                pasteBar.value = "";
-                pasteBar.classList.remove("error");
-
-                if (bgContainer) {
-                  bgContainer.classList.remove("error");
-                }
-
-                if (followBtn && followBtnText) {
-                  followBtn.classList.remove("error");
-                  followBtnText.textContent = originalBtnText;
-                }
+                termInput.classList.remove("error");
+                if (bgContainer) bgContainer.classList.remove("error");
+                giveMeBtn.classList.remove("error");
+                if (btnText) btnText.textContent = originalBtnText;
               }, 2000);
             }
           };
 
-          const readClipboardAndHandle = async () => {
-            try {
-              const pastedValue = await navigator.clipboard.readText();
-              handlePasteData(pastedValue);
-            } catch {}
-          };
-
-          pasteBar.addEventListener("mousedown", (e) => {
-            e.preventDefault();
-            readClipboardAndHandle();
-          });
-
-          pasteBar.addEventListener("click", (e) => {
-            e.preventDefault();
-            readClipboardAndHandle();
-          });
-
-          document.addEventListener("paste", (e) => {
-            e.preventDefault();
-            const pastedValue = e.clipboardData.getData("text");
-            handlePasteData(pastedValue);
-          });
-
-          document.addEventListener("keydown", (e) => {
-            const isPasteShortcut =
-              (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "v";
-
-            if (isPasteShortcut && document.activeElement !== pasteBar) {
-              pasteBar.focus();
-            }
-
-            if (document.activeElement === pasteBar) {
-              const isFunctionalKey =
-                e.key.length > 1 || e.metaKey || e.ctrlKey || e.altKey;
-              if (!isFunctionalKey && !isPasteShortcut) {
-                e.preventDefault();
-              }
-            }
+          giveMeBtn.addEventListener("click", handleSearch);
+          termInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") handleSearch();
           });
 
           window.addEventListener("pageshow", () => {
-            pasteBar.value = "";
-            pasteBar.classList.remove("success", "error");
-            if (bgContainer) {
-              bgContainer.classList.remove("success", "error");
-            }
-            if (followBtn && followBtnText) {
-              followBtn.classList.remove("success", "error");
-              followBtnText.textContent = originalBtnText;
-            }
+            termInput.value = "";
+            termInput.classList.remove("success", "error");
+            if (bgContainer) bgContainer.classList.remove("success", "error");
+            giveMeBtn.classList.remove("success", "error");
+            if (btnText) btnText.textContent = originalBtnText;
           });
         }
       </script>
