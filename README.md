@@ -1,6 +1,5 @@
 <img width="255" height="61" alt="image" src="https://github.com/user-attachments/assets/d61f120c-33f9-409b-8f2d-360b84c03580" />
 
-# REELINK
 ## *Let Comments Be Comments*
 
 **Never ask the people who love you to comment and wait for a DM. Ask them to type and click.**
