@@ -1,44 +1,46 @@
-# Astro Starter Kit: Minimal
+<img width="255" height="61" alt="image" src="https://github.com/user-attachments/assets/d61f120c-33f9-409b-8f2d-360b84c03580" />
 
-```sh
-bun create astro@latest -- --template minimal
-```
+# REELINK
+## *Let Comments Be Comments*
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+**Never ask the people who love you to comment and wait for a DM. Ask them to type and click.**
 
-## 🚀 Project Structure
+## To you:
+1. Go to your Dashboard
+2. Create a Link
+3. Add a Terms or Reel's Link too!
+4. Paste Destination Link
 
-Inside of your Astro project, you'll see the following folders and files:
+## To your audience:
+1. Note the Term (e.g. 'SHIRT')
+2. Open Link in Bio
+3. Enter the Term, or paste the Reel's Link
+4. Go to Destination Link
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Usage: Go to [reelink.cc](https://reelink.cc) and just start using!
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Tech Stack:
+#### Frontend: AstroJS, TailwindCSS
+#### Backend: Cloudflare, NeonDB, Google OAuth, Drizzle
 
-Any static assets, like images, can be placed in the `public/` directory.
+## ❤️ Contributing  
+Contributions are welcome! Please fork the repository and submit a pull request.  
 
-## 🧞 Commands
+1. Fork the project.  
+2. Create a new branch:  
+   ```bash
+   git checkout -b feature/YourFeatureName
+   ```
+3. Commit your changes:  
+   ```bash
+   git commit -m "Add some feature"
+   ```
+4. Push the branch:  
+   ```bash
+   git push origin feature/YourFeatureName
+   ```
+5. Open a pull request.
 
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `bun install`             | Installs dependencies                            |
-| `bun dev`             | Starts local dev server at `localhost:4321`      |
-| `bun build`           | Build your production site to `./dist/`          |
-| `bun preview`         | Preview your build locally, before deploying     |
-| `bun astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `bun astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-# reelink
+## 📄 License  
+This project is licensed under the [MIT License](LICENSE).
