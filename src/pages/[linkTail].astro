@@ -174,12 +174,24 @@ const getHighResGoogleUrl = (url: string): string =>
         }
 
         if (giveMeBtn && termInput) {
+          const getReelId = (str) => {
+            const match = str.match(
+              /(?:instagram\.com|instagr\.am)\/(?:reels?)\/([A-Za-z0-9_-]+)/i,
+            );
+            return match ? match[1] : str;
+          };
+
           const handleSearch = () => {
-            const enteredTerm = termInput.value.trim().toLowerCase();
+            const enteredTerm = termInput.value.trim();
             if (!enteredTerm) return;
 
+            const normalizedEntered = getReelId(enteredTerm).toLowerCase();
+
             const match = userLinks.find((link) =>
-              link.terms.some((term) => term.toLowerCase() === enteredTerm),
+              link.terms.some((term) => {
+                const normalizedTerm = getReelId(term).toLowerCase();
+                return normalizedTerm === normalizedEntered;
+              }),
             );
 
             if (match) {
